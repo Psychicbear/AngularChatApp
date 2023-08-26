@@ -1,5 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 
 
@@ -28,23 +29,14 @@ export class AuthService implements OnInit{
       this.user = new BehaviorSubject(existing as User)
     }
   }
-  constructor() {
+  constructor(private http: HttpClient) {
 
   }
 
-  //WIP, problem: converting successful local storage get item to correct type for handling 
-  login(username: string, password: string): {valid: boolean}  {
-    let response = {valid: false}
-    let storage = localStorage.getItem('users')
-    let users: [UserAuth] = storage ? storage : [{id: '', password: ''}]
-    let auth = users.find((user) => {user.username == username && user.password == password})
-
-    if(auth){
-      const {password: _, ...user} = auth
-      this.user = new BehaviorSubject(user)
-      response.valid = true
-    }
-    return response
+  //Returns observable which sends request on subscribe
+  login(username: string, password: string): Observable<any>  {
+    let req = this.http.post('localhost:3000/api/login', {username: username, password: password})
+    return req
   }
 
   /* 
