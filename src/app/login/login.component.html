@@ -1,1 +1,8 @@
-<p>login works!</p>
+<form (ngSubmit)="login()">
+    <div *ngIf="error">Error occurred</div>
+    <label for="username">Email</label>
+    <input name="username" type="email" [(ngModel)]="username" value="{{username}}">
+    <label for="password">Password</label>
+    <input name="username" type="password" [(ngModel)]="password" value="{{password}}">
+    <button type="submit">Login</button>
+</form>

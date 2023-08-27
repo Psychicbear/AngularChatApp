@@ -34,8 +34,10 @@ export class AuthService implements OnInit{
   }
 
   //Returns observable which sends request on subscribe
-  login(username: string, password: string): Observable<any>  {
-    let req = this.http.post('localhost:3000/api/login', {username: username, password: password})
+  login(email: string, password: string): Observable<any>  {
+    let jsonData = {email: email, password: password}
+    console.log('Creating observable')
+    let req = this.http.post<any>('http://localhost:3000/api/login', jsonData, {headers: {'ContentType': 'Application/json'}})
     return req
   }
 
