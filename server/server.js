@@ -34,6 +34,7 @@ app.post('/api/updateme', async (req, res) => {
 // Takes data = {email: string, password: string}, sends {success: boolean} to client
 app.post('/api/login', async (req, res) => {
     let creds = req.body
+    console.log(creds)
     let validate = {success: false}
     try {
         let file = JSON.parse(await fs.readFile('data.json'))
@@ -58,7 +59,7 @@ app.post('/api/register', async (req, res) => {
         if(file.users.find((val) => { return val.username == creds.username || val.email == creds.email})){
             throw "Account already exists with this username or email"
         } else {
-            let newuser = {...creds, id: uuid(), roles: [], groups: []}
+            let newuser = {id: uuid(), ...creds, roles: [ {global: "user"}], groups: []}
             console.log(newuser)
             file.users.push(newuser)
             await fs.writeFile('data.json', JSON.stringify(file))

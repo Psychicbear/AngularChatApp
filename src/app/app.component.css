@@ -1,0 +1,17 @@
+.app-root {
+    background-color: var(--dark-600);
+    color: var(--txt-primary)
+}
+
+.navbar {
+    background-color: var(--bg-secondary);
+    color: var(--txt-primary)
+}
+
+.nav-link {
+    color: var(--txt-primary)
+}
+
+.navbar-brand {
+    color: var(--txt-primary)
+}

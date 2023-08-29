@@ -1,0 +1,22 @@
+
+.container {
+    /* background-color: var(--bg-primary); */
+}
+
+.form-control {
+    background-color: var(--bg-primary);
+    color: var(--txt-primary);
+}
+
+.btn {
+    background-color: var(--bg-primary);
+    border-color: var(--gray-400);
+}
+
+.btn:hover {
+    background-color: var(--bg-secondary-alt);
+}
+
+.btn.active {
+    background-color: var(--bg-secondary);
+}

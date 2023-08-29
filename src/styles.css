@@ -1,4 +1,67 @@
 /* You can add global styles to this file, and also import other style files */
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+:root {
+    /* Text themes */
+        --txt-primary: #dcddde;
+        --txt-muted: #a3a6aa;
+        --txt-link: #00b0f4;
+        --txt-positive: #46c46d;
+        --txt-warning: #faa61a;
+        --txt-danger: #f38688;
+    
+    /* Background themes */
+        --bg-primary: #4f545c;
+        --bg-secondary: #2f3136;
+        --bg-secondary-alt: #292b2f;
+        --bg-tertiary: #202225;
+        --bg-accent: #4f545c;
+        --bg-floating: #18191c;
+
+    /* Dark colours  */
+        --dark-100: #f6f6f7;
+        --dark-130: #eff0f0;
+        --dark-160: #e6e6e8;
+        --dark-200: #dcddde;
+        --dark-230: #d1d3d5;
+        --dark-260: #c6c8ca;
+        --dark-300: #b9bbbe;
+        --dark-330: #a3a6aa;
+        --dark-345: #96989d;
+        --dark-360: #8e9297;
+        --dark-400: #72767d;
+        --dark-430: #686d73;
+        --dark-460: #5d6269;
+        --dark-500: #4f545c;
+        --dark-530: #484c54;
+        --dark-560: #40444b;
+        --dark-600: #36393f;
+        --dark-630: #2f3136;
+        --dark-660: #292b2f;
+        --dark-700: #202225;
+        --dark-730: #1e1f22;
+        --dark-760: #1b1d20;
+        --dark-800: #18191c;
+        --dark-830: #121315;
+        --dark-860: #0c0d0e;
+        --dark-900: #040405;
+
+    /* Gray colours  */
+        --gray-900: #202225;
+        --gray-800: #2f3136;
+        --gray-700: #36393f;
+        --gray-600: #4f545c;
+        --gray-400: #d4d7dc;
+        --gray-300: #e3e5e8;
+        --gray-200: #ebedef;
+        --gray-100: #f2f3f5; 
+}
+
+html {
+    background-color: var(--dark-600);
+}
+
+body {
+    background-color: var(--dark-600);
+}

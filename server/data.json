@@ -1,1 +1,80 @@
-{"users":[{"id":1,"username":"rjscho","password":"helloworld","email":"rjscho@live.com.au","roles":[],"groups":[],"super":true},{"id":2,"username":"bob","password":"alice123","email":"bob@.com.au","roles":[{"g1":"user"},{"g2":"admin"},{"g4":"user"}],"groups":["g1","g2","g4"]},{"id":3,"username":"alice","password":"bob123","email":"alice@.com.au","roles":[{"g1":"admin"},{"g2":"user"},{"g3":"user"}],"groups":["g1","g2","g3"]},{"email":"hello@.com.au","username":"hello","password":"world","id":"32481e8f-79ce-4ebe-b8a5-22090174d347","roles":[],"groups":[]}]}
+{
+   "users": [
+        {
+            "id": "f5ddd273-c622-467f-8bc7-4c02d7faac21",
+            "username": "rjscho",
+            "password": "helloworld",
+            "email": "rjscho@live.com.au",
+            "roles": [
+                {
+                    "global": "super"
+                }
+            ],
+            "groups": []
+        },
+        {
+            "id": "fff3c4c1-3b52-4b59-aca7-781fd5d7171d",
+            "username": "bob",
+            "password": "alice123",
+            "email": "bob@.com.au",
+            "roles": [
+                {
+                    "global": "admin"
+                },
+                {
+                    "g1": "user"
+                },
+                {
+                    "g2": "admin"
+                },
+                {
+                    "g4": "user"
+                }
+            ],
+            "groups": [
+                "g1",
+                "g2",
+                "g4"
+            ]
+        },
+        {
+            "id": "5c318fd9-0ce7-4607-99f7-0befa5070d7a",
+            "username": "alice",
+            "password": "bob123",
+            "email": "alice@.com.au",
+            "roles": [
+                {
+                    "global": "admin"
+                },
+                {
+                    "g1": "admin"
+                },
+                {
+                    "g2": "user"
+                },
+                {
+                    "g3": "user"
+                }
+            ],
+            "groups": [
+                "g1",
+                "g2",
+                "g3"
+            ]
+        },
+        {
+            "id": "fba37ade-7397-41b9-b5c8-b73c032cc4b5",
+            "email": "hello@.com.au",
+            "username": "hello",
+            "password": "world",
+            "roles": [
+                {
+                    "global": "user"
+                }
+            ],
+            "groups": [
+
+            ]
+        }
+    ]
+}
