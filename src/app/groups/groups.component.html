@@ -1,1 +1,14 @@
-<p>groups works!</p>
+<div class="container row">
+    <ul *ngIf="groups$ | async; let groups">
+        <li class="col-4" *ngFor="let group of groups.groups; index as i">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{group.name}}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">{{group.desc}}</h6>
+                    <button *ngIf="userHasAccess(group.id); else elseblock">Open Group</button>
+                    <ng-template #elseblock><button>Request Access</button></ng-template>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,56 @@
+{
+	"groups": [
+		{
+			"id": "23c2a9b0-297c-4164-9690-d69d6f8779a4",
+			"name": "Group 1",
+			"desc": "A group",
+			"channels": [
+				{
+					"id": "9c53d69e-c8b0-4dc0-969e-fbdac3bf95ac",
+					"name": "Main",
+					"desc": "Main chat",
+					"messages": []
+				}
+			]
+		},
+		{
+			"id": "a0acc528-1c3a-43b3-9096-bf777f208770",
+			"name": "Group 2",
+			"desc": "A group",
+			"channels": [
+				{
+					"id": "0698632d-c370-4f11-83e8-aaabbc551631",
+					"name": "Main",
+					"desc": "Main chat",
+					"messages": []
+				}
+			]
+		},
+		{
+			"id": "4fc975aa-aa88-441d-a817-82895d27e513",
+			"name": "Group 3",
+			"desc": "A group",
+			"channels": [
+				{
+					"id": "74700160-71b3-4068-bfa2-0252cf3e9b2f",
+					"name": "Main",
+					"desc": "Main chat",
+					"messages": []
+				}
+			]
+		},
+		{
+			"id": "4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1",
+			"name": "Group 4",
+			"desc": "A group",
+			"channels": [
+				{
+					"id": "303dc7b5-217c-4444-9ca3-c0fb8d432e88",
+					"name": "Main",
+					"desc": "Main chat",
+					"messages": []
+				}
+			]
+		}
+	]
+}

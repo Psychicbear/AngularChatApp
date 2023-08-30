@@ -63,6 +63,10 @@ export class AuthService implements OnInit{
     return this.http.post<any>('http://localhost:3000/api/register', {email: email, username: username, password: password}, {headers: {'ContentType': 'Application/json'}})
   }
 
+  getGroups(){
+    return this.http.get<any>('http://localhost:3000/api/groups')
+  }
+
   /* 
   Requirements:
   - [x] Check Session storage for user on init

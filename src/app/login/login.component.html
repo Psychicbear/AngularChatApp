@@ -9,7 +9,7 @@
     </div>
     
     <div class="col-8 border border-2 rounded my-8 p-4" *ngIf="!register; else elseblock">
-        <form class="" (ngSubmit)="login(loginemail.value, loginpass.value)">
+        <form class="" (ngSubmit)="login(loginemail.value, loginpass.value, remember.checked)">
             <div class="text-center">
                 <h1>Login</h1>
             </div>
@@ -24,7 +24,7 @@
             </div>
             <div class="form-check">
                 <label class="form-check-label" for="remember">Remember me?</label>
-                <input class="form-check-input" name="remember" type="checkbox">
+                <input #remember class="form-check-input" name="remember" type="checkbox">
             </div>
         
             <button class="my-4 btn btn-primary btn-lg" type="submit">Login</button>

@@ -73,3 +73,16 @@ app.post('/api/register', async (req, res) => {
         res.send(validate)
     }
 })
+
+app.get('/api/groups', async (req, res) => {
+    let validate = {success: false}
+    try {
+        let file = JSON.parse(await fs.readFile('groups.json'))
+        validate = {success: true, ...file}
+    } catch(err) {
+        console.log(`Error occurred: ${err}`)
+        validate = {...validate, error: err}
+    } finally {
+        res.send(validate)
+    }
+})

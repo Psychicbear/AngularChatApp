@@ -32,12 +32,12 @@ export class LoginComponent {
     })
   }
 
-  login(username: string, password: string) {
+  login(username: string, password: string, remember: boolean = false) {
     console.log('Attempting login')
     this.auth.login(username, password).subscribe((data) => {
       console.log(data)
       if(data.success){
-        this.auth.saveSession(data)
+        this.auth.saveSession(data, remember)
         this.router.navigateByUrl('/')
       } else {
         this.error = "Invalid login"
