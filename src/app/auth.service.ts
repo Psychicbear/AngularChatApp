@@ -14,19 +14,26 @@ import { User } from './classes/user';
 })
 export class AuthService implements OnInit{
   user: BehaviorSubject<User> = new BehaviorSubject({})
-  isAuthenticated: boolean = false
+  isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false)
   
-  ngOnInit(): void {
-    let existing = sessionStorage.getItem('user')
-    if(!existing){existing = localStorage.getItem('user')} 
 
-    if(existing){
-      this.user.next(existing as User)
-      this.isAuthenticated = true
-    }
+
+  ngOnInit(): void {
+
   }
   constructor(private http: HttpClient) {
+    let existing = sessionStorage.getItem('user')
+    console.log(existing)
+    if(!existing){
+      existing = localStorage.getItem('user')
+      console.log('loaded local storage')
+    } 
 
+    if(existing){
+      console.log(JSON.parse(existing))
+      this.user.next(JSON.parse(existing) as User)
+      this.isAuthenticated.next(true)
+    }
   }
 
   getUser(){
@@ -48,7 +55,7 @@ export class AuthService implements OnInit{
       localStorage.setItem('user', JSON.stringify(user))
     }
     this.user.next(user)
-    this.isAuthenticated = true
+    this.isAuthenticated.next(true)
   }
 
   //Returns observable which sends request on subscribe
@@ -61,6 +68,13 @@ export class AuthService implements OnInit{
 
   register(email: string, username:string, password: string){
     return this.http.post<any>('http://localhost:3000/api/register', {email: email, username: username, password: password}, {headers: {'ContentType': 'Application/json'}})
+  }
+
+  logout(){
+    sessionStorage.clear()
+    localStorage.clear()
+    this.user.next({})
+    this.isAuthenticated.next(false)
   }
 
   getGroups(){

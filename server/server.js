@@ -86,3 +86,18 @@ app.get('/api/groups', async (req, res) => {
         res.send(validate)
     }
 })
+
+app.get('/api/user', async (req, res) => {
+    let validate = {success: false}
+    try {
+        let file = readFile('data.json')
+        
+    } catch(err) {
+        console.log(`Error occurred: ${err}`)
+        validate = {...validate, error: err}
+    } finally {
+        res.send(validate)
+    }
+    
+
+})

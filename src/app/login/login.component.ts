@@ -27,6 +27,13 @@ export class LoginComponent {
   }
 
   ngOnInit(){
+    this.auth.isAuthenticated.subscribe(status => {
+      console.log(status)
+      if(status){
+        this.router.navigate(['/'])
+      }
+    })
+
     this.route.data.subscribe(data => {
       console.log(data)
     })

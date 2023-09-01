@@ -7,11 +7,14 @@
               </button>
           
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" routerLink="/login">Login</a></li>
-                    <li class="nav-item"><a class="nav-link" routerLink="/account">Account</a></li>
-                    <li class="nav-item"><a class="nav-link" routerLink="/">Groups</a></li>
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="auth.isAuthenticated | async; else elseblock">
+                        <li class="nav-item"><a class="nav-link" routerLink="/account">Account</a></li>
+                        <li class="nav-item"><a class="nav-link" routerLink="/">Groups</a></li>
+                        <li class="nav-item"><a class="nav-link" routerLink="/login" (click)="auth.logout()">Logout</a></li>
                 </ul>
+                <ng-template #elseblock class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" routerLink="/login">Login</a></li>
+                </ng-template>
             </div>
         </div>
     </nav>
