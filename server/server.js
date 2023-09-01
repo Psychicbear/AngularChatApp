@@ -5,12 +5,16 @@ const fs = require('fs/promises')
 let uuid = require('uuid').v4
 const bodyparser = require('body-parser')
 let port = 3000;
+const Users = require('./models/users')
+let userData = Users.newUsers('data.json')
 app.use(cors())
 app.use(bodyparser.json())
 app.listen(port, () => {
     console.log(`Launched local server at port ${port}`)
+    console.log(userData)
 })
 
+let userRoutes = require('./routes/userRoutes')
 
 app.post('/api/updateme', async (req, res) => {
     let user = req.body
@@ -31,48 +35,10 @@ app.post('/api/updateme', async (req, res) => {
 })
 
 
-// Takes data = {email: string, password: string}, sends {success: boolean} to client
-app.post('/api/login', async (req, res) => {
-    let creds = req.body
-    console.log(creds)
-    let validate = {success: false}
-    try {
-        let file = JSON.parse(await fs.readFile('data.json'))
-        let authUser = file.users.find((value) => {
-            return value.email == creds.email && value.password == creds.password
-        })
-        const {password, ...response} = authUser
-        validate.success = true
-        validate = {...response ,...validate}
-    } catch (err) {
-        console.log(`Error occurred: ${err}`)
-    } finally {
-        res.send(validate)
-    }
-})
-
-app.post('/api/register', async (req, res) => {
-    let creds = req.body
-    let validate = {success: false}
-    try {
-        let file = JSON.parse(await fs.readFile('data.json'))
-        if(file.users.find((val) => { return val.username == creds.username || val.email == creds.email})){
-            throw "Account already exists with this username or email"
-        } else {
-            let newuser = {id: uuid(), ...creds, roles: [ {global: "user"}], groups: []}
-            console.log(newuser)
-            file.users.push(newuser)
-            await fs.writeFile('data.json', JSON.stringify(file))
-            const {password, ...valuser} = newuser
-            validate = {...valuser, success: true}
-        }
-    } catch(err) {
-        console.log(`Error occurred: ${err}`)
-        validate = {...validate, error: err}
-    } finally {
-        res.send(validate)
-    }
-})
+userRoutes.authUser(app, userData)
+userRoutes.createUser(app, userData)
+userRoutes.getUser(app, userData)
+userRoutes.editUser(app, userData)
 
 app.get('/api/groups', async (req, res) => {
     let validate = {success: false}
@@ -83,21 +49,8 @@ app.get('/api/groups', async (req, res) => {
         console.log(`Error occurred: ${err}`)
         validate = {...validate, error: err}
     } finally {
+        //console.log(validate)
         res.send(validate)
     }
 })
 
-app.get('/api/user', async (req, res) => {
-    let validate = {success: false}
-    try {
-        let file = readFile('data.json')
-        
-    } catch(err) {
-        console.log(`Error occurred: ${err}`)
-        validate = {...validate, error: err}
-    } finally {
-        res.send(validate)
-    }
-    
-
-})

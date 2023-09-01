@@ -1,1 +1,106 @@
-{"users":[{"id":"f5ddd273-c622-467f-8bc7-4c02d7faac21","username":"rjscho","password":"helloworld","email":"rjscho@live.com.au","roles":[{"global":"super"}],"groups":[]},{"id":"fff3c4c1-3b52-4b59-aca7-781fd5d7171d","username":"bob","password":"alice123","email":"bob@.com.au","roles":[{"global":"admin"},{"23c2a9b0-297c-4164-9690-d69d6f8779a4":"user"},{"a0acc528-1c3a-43b3-9096-bf777f208770":"admin"},{"4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1":"user"}],"groups":["23c2a9b0-297c-4164-9690-d69d6f8779a4","a0acc528-1c3a-43b3-9096-bf777f208770","4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1"]},{"id":"5c318fd9-0ce7-4607-99f7-0befa5070d7a","username":"alice","password":"bob123","email":"alice@.com.au","roles":[{"global":"admin"},{"23c2a9b0-297c-4164-9690-d69d6f8779a4":"admin"},{"a0acc528-1c3a-43b3-9096-bf777f208770":"user"},{"4fc975aa-aa88-441d-a817-82895d27e513":"user"}],"groups":["23c2a9b0-297c-4164-9690-d69d6f8779a4","a0acc528-1c3a-43b3-9096-bf777f208770","4fc975aa-aa88-441d-a817-82895d27e513"]},{"id":"fba37ade-7397-41b9-b5c8-b73c032cc4b5","email":"hello@.com.au","username":"hello","password":"world","roles":[{"global":"user"}],"groups":[]},{"id":"32b35257-bc47-4677-b0a7-55d301875668","email":"john@.com.au","username":"John","password":"doe123","roles":[{"global":"user"}],"groups":[]}]}
+[
+	{
+		"id": "f5ddd273-c622-467f-8bc7-4c02d7faac21",
+		"email": "rjscho@live.com.au",
+		"username": "rjscho",
+		"groups": [],
+		"roles": [
+			{
+				"global": "super"
+			}
+		],
+		"isSuper": false,
+		"password": "helloworld"
+	},
+	{
+		"id": "fff3c4c1-3b52-4b59-aca7-781fd5d7171d",
+		"email": "bob@.com.au",
+		"username": "bob",
+		"groups": [
+			"23c2a9b0-297c-4164-9690-d69d6f8779a4",
+			"a0acc528-1c3a-43b3-9096-bf777f208770",
+			"4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1"
+		],
+		"roles": [
+			{
+				"global": "admin"
+			},
+			{
+				"23c2a9b0-297c-4164-9690-d69d6f8779a4": "user"
+			},
+			{
+				"a0acc528-1c3a-43b3-9096-bf777f208770": "admin"
+			},
+			{
+				"4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1": "user"
+			}
+		],
+		"isSuper": false,
+		"password": "alice123"
+	},
+	{
+		"id": "5c318fd9-0ce7-4607-99f7-0befa5070d7a",
+		"email": "alice@.com.au",
+		"username": "alice",
+		"groups": [
+			"23c2a9b0-297c-4164-9690-d69d6f8779a4",
+			"a0acc528-1c3a-43b3-9096-bf777f208770",
+			"4fc975aa-aa88-441d-a817-82895d27e513"
+		],
+		"roles": [
+			{
+				"global": "admin"
+			},
+			{
+				"23c2a9b0-297c-4164-9690-d69d6f8779a4": "admin"
+			},
+			{
+				"a0acc528-1c3a-43b3-9096-bf777f208770": "user"
+			},
+			{
+				"4fc975aa-aa88-441d-a817-82895d27e513": "user"
+			}
+		],
+		"isSuper": false,
+		"password": "bob123"
+	},
+	{
+		"id": "fba37ade-7397-41b9-b5c8-b73c032cc4b5",
+		"email": "hello@.com.au",
+		"username": "hello",
+		"groups": [],
+		"roles": [
+			{
+				"global": "user"
+			}
+		],
+		"isSuper": false,
+		"password": "world"
+	},
+	{
+		"id": "32b35257-bc47-4677-b0a7-55d301875668",
+		"email": "john@.com.au",
+		"username": "John",
+		"groups": [],
+		"roles": [
+			{
+				"global": "user"
+			}
+		],
+		"isSuper": false,
+		"password": "doe123"
+	},
+	{
+		"id": "6e123c4f-7cda-4a97-af73-fa40bb0ad3fc",
+		"email": "cool@.com.au",
+		"username": "coolguy",
+		"groups": [],
+		"roles": [
+			{
+				"global": "user"
+			}
+		],
+		"isSuper": false,
+		"password": "password"
+	}
+]
