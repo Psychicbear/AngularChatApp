@@ -1,7 +1,26 @@
 <div class="container row ">
     <h1>Account</h1>
-    <ul *ngIf="user$ | async; let user">
-        <li>Username: {{user.username}}</li>
-        <li>Email: {{user.email}}</li>
-    </ul>
+    <div *ngIf="user$ | async; let user">
+        <div *ngIf="!editMode; else elseblock">
+            <button class="btn btn-primary" (click)="editMode=true">
+                Edit
+            </button>
+            <ul>
+                <li>Username: {{user.username}}</li>
+                <li>Email: {{user.email}}</li>
+            </ul>
+        </div>
+        <ng-template #elseblock>
+            <button class="btn btn-primary" (click)="editMode=false">Cancel</button>
+            <form (ngSubmit)="saveUser(user.id! ,username.value, email.value)">
+                <div>
+                    <input #username type="text" value="{{user.username}}" name="email">
+                </div>
+                <div>
+                    <input #email type="email" value="{{user.email}}" name="email">
+                </div>
+                <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+        </ng-template>
+    </div>
 </div>

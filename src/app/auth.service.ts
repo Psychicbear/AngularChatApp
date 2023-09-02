@@ -4,6 +4,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from './classes/user';
 
 
+interface responseSuccess {
+  success: boolean,
+  err?: string
+}
+
 
 
 
@@ -15,7 +20,7 @@ import { User } from './classes/user';
 export class AuthService implements OnInit{
   user: BehaviorSubject<User> = new BehaviorSubject({})
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false)
-  
+  remember?: boolean
 
 
   ngOnInit(): void {
@@ -54,6 +59,7 @@ export class AuthService implements OnInit{
     if(remember){
       localStorage.setItem('user', JSON.stringify(user))
     }
+    this.remember = remember
     this.user.next(user)
     this.isAuthenticated.next(true)
   }
@@ -81,6 +87,9 @@ export class AuthService implements OnInit{
     return this.http.get<any>('http://localhost:3000/api/groups')
   }
 
+  editUser(id: string, fields: any){
+    return this.http.post<responseSuccess>('http://localhost:3000/api/editUser', {id: id, ...fields}, {headers: {'ContentType': 'Application/json'}})
+  }
   /* 
   Requirements:
   - [x] Check Session storage for user on init
