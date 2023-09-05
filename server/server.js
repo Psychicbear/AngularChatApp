@@ -54,7 +54,7 @@ groupRoutes.addChannel(app, groupData)// api/addChannel
 groupRoutes.editChannel(app, groupData)// api/editChannel
 groupRoutes.deleteChannel(app, groupData)// api/deleteChannel
 groupRoutes.requestJoin(app, groupData)// api/requestJoin
-groupRoutes.acceptRequest(app, groupData)// api/acceptRequest
+groupRoutes.acceptRequest(app, groupData, userData)// api/acceptRequest
 groupRoutes.denyRequest(app, groupData)// api/denyRequest
 
 
