@@ -1,5 +1,4 @@
-{
-	"groups": [
+[
 		{
 			"id": "23c2a9b0-297c-4164-9690-d69d6f8779a4",
 			"name": "Group 1",
@@ -11,6 +10,9 @@
 					"desc": "Main chat",
 					"messages": []
 				}
+			],
+			"requests": [
+				
 			]
 		},
 		{
@@ -24,6 +26,9 @@
 					"desc": "Main chat",
 					"messages": []
 				}
+			],
+			"requests": [
+
 			]
 		},
 		{
@@ -37,6 +42,9 @@
 					"desc": "Main chat",
 					"messages": []
 				}
+			],
+			"requests": [
+				
 			]
 		},
 		{
@@ -50,7 +58,9 @@
 					"desc": "Main chat",
 					"messages": []
 				}
+			],
+			"requests": [
+				
 			]
 		}
-	]
-}
+]

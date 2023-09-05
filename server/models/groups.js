@@ -5,7 +5,7 @@ const uuid = require('uuid').v4
 class Groups {
     constructor(path){
         this.path = path
-        this.loadFile()
+        this.loadFile(path)
     }
 
     //Loads data from file using specified path
@@ -31,8 +31,12 @@ class Groups {
         return group
     }
 
+    getAll(){
+        return this.list.map(group => group.serialise())
+    }
+
     //Creates new Group instance and adds it to list, returning it after
-    addGroup(name, desc){
+    add(name, desc){
         if(this.list.find(group => group.name == name)){
             throw "Group with this name already exists"
         } 
@@ -43,7 +47,7 @@ class Groups {
     }
 
     //Removes Group instance from list and returns it
-    removeGroup(id){
+    remove(id){
         let index = this.list.find(group => group.id == id)
 
         if(index==-1){
@@ -56,7 +60,7 @@ class Groups {
 
 //Data for controlling individual group's data
 class Group {
-    constructor(name, desc, id=uuid(), channels=[]){
+    constructor(name, desc, id=uuid(), channels=[], requests=[]){
         this.id = id, this.name = name, this.desc = desc, this.channels = channels
     }
 
@@ -67,11 +71,19 @@ class Group {
             return chan.serialise()
         })
         let data = {
-            id: this.id, name: this.name, desc: this.desc, channels: channels
+            id: this.id, name: this.name, desc: this.desc, channels: channels, requests: this.requests
         }
 
         return data
     }
+
+    edit(name, desc){
+        this.name = name ? name : this.name
+        this.desc = desc ? desc : this.desc
+
+        return {name: this.name, desc: this.desc}
+    }
+
 
     //Creates new Channel instance, adding to the channels list, returning the new Channel
     addChannel(name, desc=''){
@@ -101,6 +113,34 @@ class Group {
         }
 
         return channel
+    }
+    
+
+    getRequests(id){
+        if(this.requests.length() <1){
+            throw "No new requests for this group"
+        }
+
+        return this.requests
+    }
+
+    requestJoin(id) {
+        if(this.requests.find(usr => usr == id)){
+            throw "User has already requested to join"
+        }
+        this.requests.append(id)
+
+        return id
+    }
+
+    removeRequest(id){
+        let index = this.requests.findIndex(req => req == id)
+        if(index==-1){
+            throw "Join request not found"
+        }
+
+        
+        return this.requests.splice(index)
     }
 }
 
