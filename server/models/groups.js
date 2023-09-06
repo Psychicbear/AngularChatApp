@@ -17,6 +17,7 @@ class Groups {
     //Saves serialised data to file at path previously specified
     async saveFile(){
         let data = this.list.map(group => group.serialise())
+        console.log('Saving Groups')
         return await fs.writeFile(this.path, JSON.stringify(data, null, '\t'))
     }
 
@@ -61,13 +62,13 @@ class Groups {
 //Data for controlling individual group's data
 class Group {
     constructor(name, desc, id=uuid(), channels=[], requests=[]){
-        this.id = id, this.name = name, this.desc = desc, this.channels = channels
+        this.id = id, this.name = name, this.desc = desc, this.channels = channels.map(chan => new Channel(chan.name, chan.desc, chan.id, chan.message)), this.requests = requests
     }
 
 
     //Returns an object containing all of the instance's attributes
     serialise(){
-        let channels = this.list.channels.map(chan => {
+        let channels = this.channels.map(chan => {
             return chan.serialise()
         })
         let data = {
@@ -77,11 +78,11 @@ class Group {
         return data
     }
 
-    edit(name, desc){
-        this.name = name ? name : this.name
-        this.desc = desc ? desc : this.desc
+    edit(group){
+        this.name = group.name 
+        this.desc = group.desc 
 
-        return {name: this.name, desc: this.desc}
+        return this.serialise()
     }
 
 
@@ -128,8 +129,9 @@ class Group {
         if(this.requests.find(usr => usr == id)){
             throw "User has already requested to join"
         }
-        this.requests.append(id)
 
+        this.requests.push(id)
+        console.log(this.requests)
         return id
     }
 
@@ -148,6 +150,7 @@ class Group {
 class Channel {
     constructor(name="General", desc="The main channel", id=uuid(), messages=[]){
         this.id = id, this.name = name, this.desc = desc, this.messages = messages
+        console.log(this.name)
     }
 
     //Modifies the name and desc properties of this Channel, returning the changes
@@ -176,7 +179,8 @@ class Channel {
 
     //Returns an object containing all of the instance's attributes
     serialise(){
-        return {id: this.id, name: this.name, desc: this.desc, messages: this.messages}
+        let data = {id: this.id, name: this.name, desc: this.desc, messages: this.messages}
+        return data
     }
 }
 

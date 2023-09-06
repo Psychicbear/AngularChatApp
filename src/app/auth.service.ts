@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from './classes/user';
+import { User, Roles } from './classes/user';
+import { Group } from './classes/group';
 
 
-interface responseSuccess {
+interface GenericResponse<T> {
+  (args: T): T,
   success: boolean,
   err?: string
 }
@@ -17,31 +19,43 @@ interface responseSuccess {
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit{
-  user: BehaviorSubject<User> = new BehaviorSubject({})
+export class AuthService{
+  user: BehaviorSubject<User> = new BehaviorSubject({id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false)
+  isSuper: BehaviorSubject<boolean> = new BehaviorSubject(false)
   remember?: boolean
+  id: string = ''
+  username: string = ''
+  email: string = ''
+  groups: string[] = []
+  roles: Roles = {global: ''}
 
 
-  ngOnInit(): void {
-
-  }
   constructor(private http: HttpClient) {
     let existing = sessionStorage.getItem('user')
-    console.log(existing)
     if(!existing){
       existing = localStorage.getItem('user')
-      console.log('loaded local storage')
     } 
 
     if(existing){
-      console.log(JSON.parse(existing))
       this.user.next(JSON.parse(existing) as User)
-      this.isAuthenticated.next(true)
     }
+
+    this.user.subscribe(data => {
+      this.isAuthenticated.next(data.id != '')
+      console.log(data.id != '' ? "User is Authenticated" : "User is not logged in")
+      this.isSuper.next(data.roles.global == 'super')
+      console.log(data.roles.global == 'super' ? "User is Super" : "User is not Super")
+      this.id = data.id
+      this.username = data.username
+      this.email = data.email
+      this.roles = data.roles
+      this.groups = data.groups
+      
+    })
   }
 
-  getUser(){
+  getSelf(){
     return this.user.asObservable()
   }
 
@@ -51,7 +65,7 @@ export class AuthService implements OnInit{
 
 
   updateUserDB(user: User){
-    return this.http.post<any>('http://localhost:3000/api/updateme', user, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<User>>('http://localhost:3000/api/updateme', user, {headers: {'ContentType': 'Application/json'}})
   }
 
   saveSession(user: User, remember: boolean = false){
@@ -61,7 +75,6 @@ export class AuthService implements OnInit{
     }
     this.remember = remember
     this.user.next(user)
-    this.isAuthenticated.next(true)
   }
 
   //Returns observable which sends request on subscribe
@@ -79,24 +92,27 @@ export class AuthService implements OnInit{
   logout(){
     sessionStorage.clear()
     localStorage.clear()
-    this.user.next({})
-    this.isAuthenticated.next(false)
+    this.user.next({id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
   }
 
   getGroups(){
     return this.http.get<any>('http://localhost:3000/api/groups')
   }
 
-  editUser(id: string, fields: any){
-    return this.http.post<responseSuccess>('http://localhost:3000/api/editUser', {id: id, ...fields}, {headers: {'ContentType': 'Application/json'}})
+  requestJoin(userId: string, groupId: string){
+    return this.http.post<GenericResponse<any>>('http://localhost:3000/api/requestJoin', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
   }
-  /* 
-  Requirements:
-  - [x] Check Session storage for user on init
-  - [ ] Login as user (for now, check local storage, load auth and session storage with properties, send success )
-  - [ ] Log out as user (Clear user properties and session storage)
-  - [ ] Edit user account
-  - [ ] Permission Level Observable
-  - [ ] Change permission level based on group id
-  */
+
+  getUser(id: string){
+    this.http.get<any>('http://localhost:3000/api/user/' + id)
+  }
+
+  editUser(user: User){
+    return this.http.post<GenericResponse<User>>('http://localhost:3000/api/editUser', user, {headers: {'ContentType': 'Application/json'}})
+  }
+
+
+
+
+
 }

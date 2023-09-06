@@ -1,0 +1,15 @@
+.modal-content{
+    background-color: var(--bg-primary);
+    color: var(--text-primary)
+}
+
+.btn-primary {
+    --bs-btn-color: var(--txt-primary);
+    --bs-btn-bg: var(--bg-primary);
+    --bs-btn-border-color: var(--gray-400);
+    --bs-btn-hover-bg: var(--dark-660);
+    --bs-btn-hover-border-color: var(--gray-400);
+    --bs-btn-active-border-color: var(--dark-630);
+    --bs-btn-active-color: var(--txt-primary);
+    --bs-btn-active-bg: var(--gray-400);
+}

@@ -2,14 +2,11 @@
 	{
 		"id": "f5ddd273-c622-467f-8bc7-4c02d7faac21",
 		"email": "rjscho@live.com.au",
-		"username": "rjscho",
+		"username": "rjscho123",
 		"groups": [],
-		"roles": [
-			{
-				"global": "super"
-			}
-		],
-		"isSuper": false,
+		"roles": {
+			"global": "super"
+		},
 		"password": "helloworld"
 	},
 	{
@@ -21,21 +18,12 @@
 			"a0acc528-1c3a-43b3-9096-bf777f208770",
 			"4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1"
 		],
-		"roles": [
-			{
-				"global": "admin"
-			},
-			{
-				"23c2a9b0-297c-4164-9690-d69d6f8779a4": "user"
-			},
-			{
-				"a0acc528-1c3a-43b3-9096-bf777f208770": "admin"
-			},
-			{
-				"4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1": "user"
-			}
-		],
-		"isSuper": false,
+		"roles": {
+			"global": "admin",
+			"23c2a9b0-297c-4164-9690-d69d6f8779a4": "user",
+			"a0acc528-1c3a-43b3-9096-bf777f208770": "admin",
+			"4c7729e9-f9fd-4b1f-9631-dfa1ba7ba6a1": "user"
+		},
 		"password": "alice123"
 	},
 	{
@@ -47,21 +35,12 @@
 			"a0acc528-1c3a-43b3-9096-bf777f208770",
 			"4fc975aa-aa88-441d-a817-82895d27e513"
 		],
-		"roles": [
-			{
-				"global": "admin"
-			},
-			{
-				"23c2a9b0-297c-4164-9690-d69d6f8779a4": "admin"
-			},
-			{
-				"a0acc528-1c3a-43b3-9096-bf777f208770": "user"
-			},
-			{
-				"4fc975aa-aa88-441d-a817-82895d27e513": "user"
-			}
-		],
-		"isSuper": false,
+		"roles": {
+			"global": "admin",
+			"23c2a9b0-297c-4164-9690-d69d6f8779a4": "admin",
+			"a0acc528-1c3a-43b3-9096-bf777f208770": "user",
+			"4fc975aa-aa88-441d-a817-82895d27e513": "user"
+		},
 		"password": "bob123"
 	},
 	{
@@ -69,12 +48,9 @@
 		"email": "hello@.com.au",
 		"username": "hello",
 		"groups": [],
-		"roles": [
-			{
-				"global": "user"
-			}
-		],
-		"isSuper": false,
+		"roles": {
+			"global": "user"
+		},
 		"password": "world"
 	},
 	{
@@ -82,12 +58,9 @@
 		"email": "john@.com.au",
 		"username": "John",
 		"groups": [],
-		"roles": [
-			{
-				"global": "user"
-			}
-		],
-		"isSuper": false,
+		"roles": {
+			"global": "user"
+		},
 		"password": "doe123"
 	},
 	{
@@ -95,12 +68,9 @@
 		"email": "cool@.com.au",
 		"username": "coolguy",
 		"groups": [],
-		"roles": [
-			{
-				"global": "user"
-			}
-		],
-		"isSuper": false,
+		"roles": {
+			"global": "user"
+		},
 		"password": "password"
 	}
 ]

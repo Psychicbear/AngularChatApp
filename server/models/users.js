@@ -20,6 +20,7 @@ class Users {
     //Saves serialised data to file at path previously specified
     async saveFile(){
         let data = this.list.map(user => user.serialise(true))
+        console.log('Saving Users')
         return await fs.writeFile(this.path, JSON.stringify(data, null, '\t'))
     }
 
@@ -82,15 +83,16 @@ class Users {
 
 //Class for managing individual user's data
 class User {
-    constructor(email, username, password, id=uuid(), groups=[], roles=[{global: "user"}], isSuper=false){
+    constructor(email, username, password, id=uuid(), groups=[], roles={global: "user"}){
         this.id = id, this.email = email, this.username = username, this.password = password,
-        this.groups = groups, this.roles = roles, this.isSuper = isSuper
+        this.groups = groups, this.roles = roles
     }
 
     //Takes an object, merges it's properties with User instance, 
     //updating matching attributes. Returns serialised instance
-    edit(fields){
-        Object.assign(this, fields)
+    edit(user){
+        this.email = user.email, this.username = user.username, 
+        this.groups = user.groups, this.roles = user.roles
 
         return this.serialise()
     }
@@ -98,12 +100,12 @@ class User {
     //Takes group: string, adds it to groups array, 
     //creates and adds matching roles to roles array
     addToGroup(group){
-        if(this.groups.find(item => item == group)){
+        if(group in this.roles){
             throw "User already in selected group"
         }
 
         this.groups.push(group)
-        this.roles.push({[group]: "user"})
+        this.roles[group] = "user"
 
         return this.groups
     }
@@ -136,7 +138,7 @@ class User {
     serialise(password=false){
         let data = {
             id: this.id, email: this.email, username: this.username, 
-            groups: this.groups, roles: this.roles, isSuper: this.isSuper
+            groups: this.groups, roles: this.roles
         }
         if(password) data.password = this.password 
         return data

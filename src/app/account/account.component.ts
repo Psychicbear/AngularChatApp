@@ -14,16 +14,17 @@ import { FormsModule } from '@angular/forms'
 })
 export class AccountComponent {
   auth = inject(AuthService)
-  user$?: Observable<User>
+  user$: Observable<User>
   editMode: boolean = false
   error?: string
   
   constructor() {
-    this.user$ = this.auth.getUser()
+    this.user$ = this.auth.getSelf()
   }
 
-  saveUser(id: string, username: string, email:string){
-    this.auth.editUser(id, {username: username, email: email}).subscribe( res => {
+  saveUser(user: User, username: string, email: string){
+    let save = {...user, username: username, email: email}
+    this.auth.editUser(save).subscribe( res => {
       console.log(res)
       const {success, ...user} = res
 

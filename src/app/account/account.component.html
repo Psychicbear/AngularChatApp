@@ -1,18 +1,24 @@
 <div class="container row ">
-    <h1>Account</h1>
     <div *ngIf="user$ | async; let user">
         <div *ngIf="!editMode; else elseblock">
-            <button class="btn btn-primary" (click)="editMode=true">
-                Edit
-            </button>
-            <ul>
-                <li>Username: {{user.username}}</li>
-                <li>Email: {{user.email}}</li>
+            <div class="row py-4">
+                <h1 class="col-2">Account</h1>
+                <button class="btn btn-primary col-1 m-2" (click)="editMode=true">
+                    Edit
+                </button>
+            </div>
+            <ul class="col-10 list-group bg-">
+                <li class="list-group-item">
+                    <h2>Account Details</h2>
+                    Username: {{user.username}}
+                </li>
+                <li class="list-group-item">Email: {{user.email}}</li>
             </ul>
+
         </div>
         <ng-template #elseblock>
             <button class="btn btn-primary" (click)="editMode=false">Cancel</button>
-            <form (ngSubmit)="saveUser(user.id! ,username.value, email.value)">
+            <form (ngSubmit)="saveUser(user, username.value, email.value)">
                 <div>
                     <input #username type="text" value="{{user.username}}" name="email">
                 </div>

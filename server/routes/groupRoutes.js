@@ -19,7 +19,7 @@ module.exports = {
 
     //Simply returns all groups
     getGroups: (app, groups) => {
-        app.get('/api/group/all', (req, res) => {
+        app.get('/api/groups', (req, res) => {
             let validate
             try {
                 let all = groups.getAll()
@@ -185,6 +185,7 @@ module.exports = {
     requestJoin: (app, groups) => {
         app.post('/api/requestJoin', async (req, res) => {
             const {userId, groupId} = req.body
+            console.log({userId, groupId})
             let validate
             try {
                 let group = groups.getGroup(groupId)

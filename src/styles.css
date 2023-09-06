@@ -56,6 +56,13 @@
         --gray-300: #e3e5e8;
         --gray-200: #ebedef;
         --gray-100: #f2f3f5; 
+
+    /* Bootstrap Color Config */
+    --bs-primary: var(--bg-primary);
+    --bs-body-bg: var(--dark-600);
+    --bs-body-color: var(--txt-primary);
+    --bs-secondary-color: var(--txt-muted)
+    --bs-border-color: var(--gray-400);
 }
 
 html {
