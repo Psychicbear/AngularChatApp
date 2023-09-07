@@ -114,6 +114,7 @@ All Data Models include a method to serialise their data, reducing the class ins
 All API calls are to be sent to the route at `./api/`. All responses from the API will return an object containing `{success: boolean}` indicating whether or not the process completed as intended. If the process fails, the returning object will also return `{err: string}` containing an error message
 ## User Management
 ### Login
+|||
 |:--|:--|
 |**Description**|This route authenticates user login requests. If authentication succeeds then server responds with the User object (not including password) and otherwise returns an error|
 |**Route**|`/api/login`|
@@ -122,6 +123,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ ...User, success: boolean, err?: string }`|
 
 ### Get User
+|||
 |:--|:--|
 |**Description**|This route takes a user ID in the URL, and searches the database for a user with the same ID. The route is used populating user details within a page
 |**Route**|`/api/user/:id`|
@@ -129,6 +131,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ ...User, success: boolean, err?: string }`|
 
 ### Get Users By Group
+|||
 |:--|:--|
 |**Description**|Takes a group ID in the URL, and searches the database for all users which contain the group ID within their group list. This route is used for fetching a list of users for displaying group participants.
 |**Route**|`/api/user/byGroup/:id`|
@@ -136,6 +139,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ users: User[], success: boolean, err?: string }`|
 
 ### Create User
+|||
 |:--|:--|
 |**Description**|Takes new user credentials and creates a new User within the database if their credentials don't already exist within the database. This route is used for user registration.
 |**Route**|`/api/register`|
@@ -144,6 +148,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ ...User, success: boolean, err?: string }`|
 
 ### Edit User
+|||
 |:--|:--|
 |**Description**|Takes new user credentials and creates a new User within the database if their credentials don't already exist within the database. This route is used for user registration.
 |**Route**|`/api/editUser`|
@@ -153,6 +158,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 
 ## Group Management
 ### Get Group
+|||
 |:--|:--|
 |**Description**|Takes group ID as URL params, returns a group with matching ID if found. This route is used for displaying group details
 |**Route**|`/api/group/:id`|
@@ -160,6 +166,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ ...Group, success: boolean, err?: string }`|
 
 ### Get Groups
+|||
 |:--|:--|
 |**Description**|Simply returns a list of all the groups that exist within the database. This route is used for the group list page.
 |**Route**|`/api/groups`|
@@ -167,6 +174,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ groups: Group[], success: boolean, err?: string }`|
 
 ### Get Requests
+|||
 |:--|:--|
 |**Description**|Takes a group ID as URL params, returns a list of user IDs of whom have requested to join the group.
 |**Route**|`/api/requests/:id`|
@@ -174,6 +182,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ requests: string[], success: boolean, err?: string }`|
 
 ### Create Group
+|||
 |:--|:--|
 |**Description**|Takes a group name and description, creates a new Group within the database and returns it if successful.
 |**Route**|`/api/addGroup`|
@@ -182,6 +191,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ ...Group, success: boolean, err?: string }`|
 
 ### Edit Group
+|||
 |:--|:--|
 |**Description**|Takes new group name and description, applies new attributes to group matching id and returns the modified group if successful.
 |**Route**|`/api/editGroup`|
@@ -190,6 +200,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ ...Group, success: boolean, err?: string }`|
 
 ### Delete Group
+|||
 |:--|:--|
 |**Description**|Takes group id, deletes group from database if found.
 |**Route**|`/api/deleteGroup`|
@@ -198,6 +209,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ removed: Group, success: boolean, err?: string }`|
 
 ### Request Join
+|||
 |:--|:--|
 |**Description**|Takes user id and group id, adds user id to the request array of the group with matching id. Returns the user id on success
 |**Route**|`/api/requestJoin`|
@@ -206,6 +218,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ user: string, success: boolean, err?: string }`|
 
 ### Accept Request
+|||
 |:--|:--|
 |**Description**|Takes user id and group id, adds the user to the respective group by removing the user id from request list, and adding the group to the user data
 |**Route**|`/api/acceptRequest`|
@@ -214,6 +227,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ user: string, joined: groupId, success: boolean, err?: string }`|
 
 ### Accept Request
+|||
 |:--|:--|
 |**Description**|Takes user id and group id, removes the user id from the group's request array.
 |**Route**|`/api/denyRequest`|
@@ -223,6 +237,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 
 ## Channel Management
 ### Get Channels
+|||
 |:--|:--|
 |**Description**|Takes group Id in URL params, gets all channels from the selected group. This route is for displaying the list of channels.
 |**Route**|`/api/channels/:id`|
@@ -230,6 +245,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ channels: Channel[], success: boolean, err?: string }`|
 
 ### Add Channel
+|||
 |:--|:--|
 |**Description**|Creates a new Channel within the Group matching id using the name and desc params. Returns the affected Group if successful
 |**Route**|`/api/addChannel`|
@@ -239,6 +255,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 
 
 ### Edit Channel
+|||
 |:--|:--|
 |**Description**|Applies the name and desc attributes to the channel matching the chanId within the group matching the groupId. Returns the affected Group if successful
 |**Route**|`/api/editChannel`|
@@ -247,6 +264,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Return Value**|`{ ...Group, success: boolean, err?: string }`|
 
 ### Delete Channel
+|||
 |:--|:--|
 |**Description**|Deletes the channel matching chanId from the group matching groupId, returning the removed Channel on success.
 |**Route**|`/api/denyRequest`|
