@@ -1,0 +1,30 @@
+.btn-primary {
+    --bs-btn-color: var(--txt-primary);
+    --bs-btn-bg: var(--dark-600);
+    --bs-btn-border-color: var(--gray-400);
+    --bs-btn-hover-bg: var(--dark-660);
+    --bs-btn-hover-border-color: var(--gray-400);
+    --bs-btn-active-border-color: var(--dark-630);
+    --bs-btn-active-color: var(--txt-primary);
+    --bs-btn-active-bg: var(--gray-400);
+    --bs-dropdown-bg: var(--dark-900);
+    --bs-dropdown-link-hover-bg: var(--dark-900)
+}
+
+.dropdown-menu {
+    --bs-dropdown-link-hover-bg: var(--dark-500);
+    background-color: var(--dark-800);
+    width: 100%;
+}
+
+.channel-select{
+    
+}
+
+.dropdown-toggle {
+    border-width: 0;
+}
+
+.bg-tertiary {
+    background-color: var(--bg-secondary);
+}

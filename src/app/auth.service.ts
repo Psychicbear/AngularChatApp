@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { User, Roles } from './classes/user';
-import { Group } from './classes/group';
+import { Channel, Group } from './classes/group';
 
 
 interface GenericResponse<T> {
@@ -29,7 +30,7 @@ export class AuthService{
   email: string = ''
   groups: string[] = []
   roles: Roles = {global: ''}
-
+  cachedUsers: User[] = []
 
   constructor(private http: HttpClient) {
     let existing = sessionStorage.getItem('user')
@@ -57,6 +58,15 @@ export class AuthService{
 
   getSelf(){
     return this.user.asObservable()
+  }
+
+  getRole(id: string){
+    let role = ''
+    for (const [key, value] of Object.entries(this.roles)) {
+      if(key == id) role = value
+    }
+
+    return role
   }
 
   isLoggedIn(){
@@ -104,15 +114,30 @@ export class AuthService{
   }
 
   getUser(id: string){
-    this.http.get<any>('http://localhost:3000/api/user/' + id)
+    return this.http.get<any>('http://localhost:3000/api/user/' + id)
+  }
+
+  //WIP, pulls user data from either cachedUsers or api
+  fetchUser(id: string){
+    let user = this.cachedUsers.find(user => user.id == id)
+    let local = of(user)
+    let api = this.getUser(id)
+    
   }
 
   editUser(user: User){
     return this.http.post<GenericResponse<User>>('http://localhost:3000/api/editUser', user, {headers: {'ContentType': 'Application/json'}})
   }
 
+  getChannels(groupId: string){
+    return this.http.get<any>('http://localhost:3000/api/channels/' + groupId)
+  }
 
+  getUsersInGroup(groupId: string){
+    return this.http.get<any>('http://localhost:3000/api/user/byGroup/' + groupId)
+  }
 
-
-
+  addChannel(groupId: string, name: string, desc: string){
+    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/addChannel', {id: groupId, name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+  }
 }

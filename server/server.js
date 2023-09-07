@@ -43,6 +43,7 @@ userRoutes.authUser(app, userData)// api/login
 userRoutes.createUser(app, userData)// api/register
 userRoutes.getUser(app, userData)// api/user/:id
 userRoutes.editUser(app, userData)// api/editUser
+userRoutes.getUsersByGroup(app, userData)// api/user/byGroup/:id
 groupRoutes.getGroup(app, groupData)// api/group/:id
 groupRoutes.getGroups(app, groupData)// api/group/all
 groupRoutes.getRequests(app, groupData)// api/requests/:id

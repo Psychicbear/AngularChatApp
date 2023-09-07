@@ -9,11 +9,11 @@ export interface Group extends IdentifiableObj {
     requests: string[]
 }
 
-interface Channel extends IdentifiableObj{
+export interface Channel extends IdentifiableObj{
     messages: Message[]
 }
 
-interface Message {
+export interface Message {
     userId: string,
     content: string,
     timestamp: Date

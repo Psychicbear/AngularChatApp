@@ -61,8 +61,17 @@
     --bs-primary: var(--bg-primary);
     --bs-body-bg: var(--dark-600);
     --bs-body-color: var(--txt-primary);
-    --bs-secondary-color: var(--txt-muted)
+    --bs-secondary-color: var(--txt-muted);
     --bs-border-color: var(--gray-400);
+
+    --bs-btn-color: var(--txt-primary);
+    --bs-btn-bg: var(--bg-primary);
+    --bs-btn-border-color: var(--gray-400);
+    --bs-btn-hover-bg: var(--dark-660);
+    --bs-btn-hover-border-color: var(--gray-400);
+    --bs-btn-active-border-color: var(--dark-630);
+    --bs-btn-active-color: var(--txt-primary);
+    --bs-btn-active-bg: var(--gray-400);
 }
 
 html {

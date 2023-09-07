@@ -11,7 +11,7 @@ class Groups {
     //Loads data from file using specified path
     async loadFile(path){
         let data = JSON.parse(await fs.readFile(path))
-        this.list = data.map(item => new Group(item.name, item.desc, item.id, item.channels))
+        this.list = data.map(item => new Group(item.name, item.desc, item.id, item.channels, item.requests))
     }
 
     //Saves serialised data to file at path previously specified

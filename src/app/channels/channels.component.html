@@ -1,1 +1,96 @@
-<p>channels works!</p>
+<!-- Add Channel Modal -->
+<ng-template #addChannelModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-add-title">Add New Channel</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Name:</label>
+                <input class="form-control" #addname type="text">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" #adddesc></textarea>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)="addChannel(addname.value, adddesc.value, modal)">Add</button>
+    </div>
+</ng-template>
+
+<div class="container p-0 h-100">
+    <div class="row">
+        <div class="col-2 bg-tertiary py-2" *ngIf="channels$ | async as channels">
+            <div class="d-flex justify-content-between">
+                <h3>Channels</h3>
+                <button class="btn btn-primary d-inline" (click)="open(addChannel)">Add</button>
+            </div>
+            <div class="" *ngFor="let channel of channels['channels']">
+                <div class="btn btn-primary" (click)="setChannel(channel)">{{channel.name}}</div>
+            </div>
+        </div>
+        <div *ngIf="channel; else nochannel" class="col d-flex flex-column align-space-between">
+            <nav class="navbar row">
+                <div class="container-fluid">
+                    <h2>{{channel.name}}</h2>
+                    <div class="d-flex">
+                        <button class="btn btn-primary">Edit</button>
+                    </div>
+                </div>
+            </nav>
+            <form class="">
+                <input>
+            </form>
+        </div>
+        <ng-template #nochannel>
+            <div class="col">
+                <nav class="navbar row">
+                    <div class="container-fluid">
+                        <h2>No Channel Selected</h2>
+                    </div>
+                </nav>
+            </div>
+
+            
+            
+        </ng-template>
+        <div class="col-2 py-2 bg-tertiary" *ngIf="users$ | async as users">
+            <h4>Users</h4>
+            <div class="">
+                <div ngbDropdown class="d-inline-block col-12 p-2" *ngFor="let user of users['users']; index as i">
+                    <div class="btn btn-primary w-100" [id]="dropdownId(i)" ngbDropdownToggle>
+                        {{user.username}}
+                    </div>
+                    <div class="col-2" ngbDropdownMenu [attr.aria-labelledby]="dropdownId(i)">
+                        <button ngbDropdownItem>Ban</button>
+                        <button ngbDropdownItem>Promote</button>
+                        <!-- <ng-template *ngIf="isSuper || isGroupAdmin; else useropt">
+                            <button ngbDropdownItem>Ban</button>
+                            <button ngbDropdownItem>Promote</button>
+                        </ng-template>
+                        <ng-template #useropt>
+                            <button ngbDropdownItem>Report User</button>
+                        </ng-template> -->
+    
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- <div class="list-group" [ngStyle]="getContextMenuStyle()" *ngIf="userContext && contextMenuIsDisplayed">
+    <ng-template *ngIf="isSuper || isGroupAdmin; else report">
+        <div class="list-group-item">Ban from Group</div>
+        <div class="list-group-item">Promote to admin</div>
+    </ng-template>
+    <ng-template #report>
+        <div class="list-group-item">Report</div>
+    </ng-template>
+</div> -->

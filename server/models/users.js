@@ -36,8 +36,9 @@ class Users {
     //Takes a function for filtering through list, returns found users
     getUsers(fn){
         let users = this.list.filter(fn)
+        console.log(users)
 
-        if(users.length()<1){
+        if(users.length<1){
             throw "No users found matching specified query"
         }
 

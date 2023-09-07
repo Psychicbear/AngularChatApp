@@ -23,6 +23,7 @@ module.exports = {
             let validate
             try {
                 let all = groups.getAll()
+                console.log(all[2])
                 validate = {groups: all, success: true}
             } catch(err) {
                 console.log(`Error occurred: ${err}`)

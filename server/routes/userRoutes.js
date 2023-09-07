@@ -30,6 +30,25 @@ module.exports = {
             }
         })
     },
+
+    getUsersByGroup: (app, users) => {
+        app.get('/api/user/byGroup/:id', (req, res) => {
+            let validate
+            try {
+                let id = req.params.id
+                let match = (user) => {return user.roles.global == "super" || user.groups.find(group => group == id)}
+                let groupUsers = users.getUsers(match)
+                
+                groupUsers = groupUsers.map(user => user.serialise())
+                validate = {users: groupUsers, success: true}
+            } catch(err) {
+                console.log(`Error occurred: ${err}`)
+                validate = {...validate, error: err}
+            } finally {
+                res.send(validate)
+            }
+        })
+    },
     
     createUser: (app, users) => {
         app.post('/api/register', async (req, res) => {
@@ -47,6 +66,7 @@ module.exports = {
             }
         })
     },
+
     
     editUser: (app, users) => {
         app.post('/api/editUser', async (req, res) => {
