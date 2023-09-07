@@ -33,7 +33,7 @@ class Groups {
     }
 
     getAll(){
-        return this.list.map(group => group.serialise())
+        return this.list
     }
 
     //Creates new Group instance and adds it to list, returning it after
@@ -61,7 +61,7 @@ class Groups {
 
 //Data for controlling individual group's data
 class Group {
-    constructor(name, desc, id=uuid(), channels=[], requests=[]){
+    constructor(name, desc, id=uuid(), channels=[new Channel()], requests=[]){
         this.id = id, this.name = name, this.desc = desc, this.channels = channels.map(chan => new Channel(chan.name, chan.desc, chan.id, chan.message)), this.requests = requests
     }
 
@@ -78,11 +78,11 @@ class Group {
         return data
     }
 
-    edit(group){
-        this.name = group.name 
-        this.desc = group.desc 
+    edit(name, desc){
+        this.name = name 
+        this.desc = desc 
 
-        return this.serialise()
+        return this
     }
 
 
@@ -96,7 +96,7 @@ class Group {
 
     //Removes Channel instance from channel, returning the removed Channel
     removeChannel(id){
-        let index = this.channel.findIndex(chan => chan.id == id)
+        let index = this.channels.findIndex(chan => chan.id == id)
 
         if(index==-1){
             throw "Selected channel does not exist already"
@@ -148,7 +148,7 @@ class Group {
 
 //Class for managing individual channel's data
 class Channel {
-    constructor(name="General", desc="The main channel", id=uuid(), messages=[]){
+    constructor(name="Main", desc="The main channel", id=uuid(), messages=[]){
         this.id = id, this.name = name, this.desc = desc, this.messages = messages
         console.log(this.name)
     }
@@ -158,7 +158,7 @@ class Channel {
         this.name = name
         this.desc = desc
 
-        return {name: this.name, desc: this.desc}
+        return this
     }
 
     //Pushes passed in msg object to message array

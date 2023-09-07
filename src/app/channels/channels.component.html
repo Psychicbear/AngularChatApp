@@ -1,32 +1,69 @@
-<!-- Add Channel Modal -->
-<ng-template #addChannelModal let-modal>
+<!-- Modal Add Group -->
+<div id="addChannelModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Channel</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Name:</label>
+                    <input class="form-control" #addname type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" #adddesc></textarea>
+                </div>
+            </form> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="addChannel(addname, adddesc)">Add Channel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Edit Modal -->
+<div id="editChannelModal" class="modal" tabindex="-1">
+<div class="modal-dialog">
+    <div class="modal-content">
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-add-title">Add New Channel</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        <h5 class="modal-title">Add Channel</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
         <form>
             <div class="mb-3">
                 <label class="form-label">Name:</label>
-                <input class="form-control" #addname type="text">
+                <input class="form-control" name="name" [(ngModel)]="editName" #name type="text">
             </div>
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <textarea class="form-control" #adddesc></textarea>
+                <textarea class="form-control" name="desc" [(ngModel)]="editDesc" #desc></textarea>
             </div>
-        </form>
+        </form> 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" (click)="addChannel(addname.value, adddesc.value, modal)">Add</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="editChannel(name.value, desc.value)">Save Channel</button>
     </div>
-</ng-template>
+    </div>
+</div>
+</div>
+
 
 <div class="container p-0 h-100">
     <div class="row">
         <div class="col-2 bg-tertiary py-2" *ngIf="channels$ | async as channels">
+            <div class="py-2 my-2">
+                <h3>{{groupName}}</h3>
+            </div>
             <div class="d-flex justify-content-between">
                 <h3>Channels</h3>
-                <button class="btn btn-primary d-inline" (click)="open(addChannel)">Add</button>
+                <button *ngIf="isGroupAdmin || isSuper" class="btn btn-primary d-inline" type="button" data-bs-toggle="modal" data-bs-target="#addChannelModal">Add</button>
             </div>
             <div class="" *ngFor="let channel of channels['channels']">
                 <div class="btn btn-primary" (click)="setChannel(channel)">{{channel.name}}</div>
@@ -36,8 +73,9 @@
             <nav class="navbar row">
                 <div class="container-fluid">
                     <h2>{{channel.name}}</h2>
-                    <div class="d-flex">
-                        <button class="btn btn-primary">Edit</button>
+                    <div *ngIf="isGroupAdmin || isSuper" class="btn-group">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="setEdit(channel.id, channel.name, channel.desc)">Edit</button>
+                        <button class="btn btn-danger" (click)="deleteChannel(channel.id)">Delete</button>
                     </div>
                 </div>
             </nav>
@@ -64,18 +102,15 @@
                     <div class="btn btn-primary w-100" [id]="dropdownId(i)" ngbDropdownToggle>
                         {{user.username}}
                     </div>
-                    <div class="col-2" ngbDropdownMenu [attr.aria-labelledby]="dropdownId(i)">
+                    <div *ngIf="isGroupAdmin || isSuper; else dropuser" class="col-2" ngbDropdownMenu [attr.aria-labelledby]="dropdownId(i)">
                         <button ngbDropdownItem>Ban</button>
                         <button ngbDropdownItem>Promote</button>
-                        <!-- <ng-template *ngIf="isSuper || isGroupAdmin; else useropt">
-                            <button ngbDropdownItem>Ban</button>
-                            <button ngbDropdownItem>Promote</button>
-                        </ng-template>
-                        <ng-template #useropt>
-                            <button ngbDropdownItem>Report User</button>
-                        </ng-template> -->
-    
                     </div>
+                    <ng-template #dropuser>
+                        <div class="col-2" ngbDropdownMenu [attr.aria-labelledby]="dropdownId(i)">
+                            <button ngbDropdownItem>Report</button>
+                        </div>
+                    </ng-template>
                 </div>
     
             </div>
@@ -83,14 +118,3 @@
     </div>
 
 </div>
-
-
-<!-- <div class="list-group" [ngStyle]="getContextMenuStyle()" *ngIf="userContext && contextMenuIsDisplayed">
-    <ng-template *ngIf="isSuper || isGroupAdmin; else report">
-        <div class="list-group-item">Ban from Group</div>
-        <div class="list-group-item">Promote to admin</div>
-    </ng-template>
-    <ng-template #report>
-        <div class="list-group-item">Report</div>
-    </ng-template>
-</div> -->

@@ -51,6 +51,7 @@ export class AuthService{
       this.username = data.username
       this.email = data.email
       this.roles = data.roles
+      console.log(data.groups)
       this.groups = data.groups
       
     })
@@ -129,6 +130,10 @@ export class AuthService{
     return this.http.post<GenericResponse<User>>('http://localhost:3000/api/editUser', user, {headers: {'ContentType': 'Application/json'}})
   }
 
+  deleteAccount(){
+    return this.http.post<any>('http://localhost:3000/api/deleteUser', {id: this.id}, {headers: {'ContentType': 'Application/json'}})
+  }
+
   getChannels(groupId: string){
     return this.http.get<any>('http://localhost:3000/api/channels/' + groupId)
   }
@@ -137,7 +142,31 @@ export class AuthService{
     return this.http.get<any>('http://localhost:3000/api/user/byGroup/' + groupId)
   }
 
+  getGroup(id: string){
+    return this.http.get<any>('http://localhost:3000/api/group/' + id)
+  }
+
+  addGroup(name: string, desc: string){
+    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/addGroup', {name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+  }
+
+  editGroup(id: string, name: string, desc: string){
+    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/editGroup', {id: id, name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+  }
+
+  deleteGroup(id: string){
+    return this.http.post<any>('http://localhost:3000/api/deleteGroup', {id: id}, {headers: {'ContentType': 'Application/json'}})
+  }
+
   addChannel(groupId: string, name: string, desc: string){
     return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/addChannel', {id: groupId, name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+  }
+
+  editChannel(groupId: string, chanId: string, name: string, desc: string){
+    return this.http.post<GenericResponse<Channel>>('http://localhost:3000/api/editChannel', {groupId: groupId, chanId: chanId, name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+  }
+
+  deleteChannel(groupId: string, chanId: string){
+    return this.http.post<any>('http://localhost:3000/api/deleteChannel', {groupId: groupId, chanId: chanId}, {headers: {'ContentType': 'Application/json'}})
   }
 }

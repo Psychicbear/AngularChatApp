@@ -1,36 +1,17 @@
 [
 	{
-		"id": "23c2a9b0-297c-4164-9690-d69d6f8779a4",
-		"name": "Group 1",
-		"desc": "A group",
-		"channels": [
-			{
-				"id": "9c53d69e-c8b0-4dc0-969e-fbdac3bf95ac",
-				"name": "Main",
-				"desc": "Main chat",
-				"messages": []
-			}
-		],
-		"requests": [
-			"6e123c4f-7cda-4a97-af73-fa40bb0ad3fc",
-			"32b35257-bc47-4677-b0a7-55d301875668"
-		]
-	},
-	{
 		"id": "a0acc528-1c3a-43b3-9096-bf777f208770",
 		"name": "Group 2",
 		"desc": "A group",
 		"channels": [
 			{
 				"id": "0698632d-c370-4f11-83e8-aaabbc551631",
-				"name": "Main",
+				"name": "New Main",
 				"desc": "Main chat",
 				"messages": []
 			}
 		],
 		"requests": [
-			"6e123c4f-7cda-4a97-af73-fa40bb0ad3fc",
-			"32b35257-bc47-4677-b0a7-55d301875668"
 		]
 	},
 	{
@@ -46,9 +27,7 @@
 			}
 		],
 		"requests": [
-			"fff3c4c1-3b52-4b59-aca7-781fd5d7171d",
-			"6e123c4f-7cda-4a97-af73-fa40bb0ad3fc",
-			"32b35257-bc47-4677-b0a7-55d301875668"
+			"fff3c4c1-3b52-4b59-aca7-781fd5d7171d"
 		]
 	},
 	{
@@ -64,8 +43,14 @@
 			}
 		],
 		"requests": [
-			"6e123c4f-7cda-4a97-af73-fa40bb0ad3fc",
 			"32b35257-bc47-4677-b0a7-55d301875668"
 		]
+	},
+	{
+		"id": "3bcc2eb3-bdc8-4a28-a15a-683cc9986d01",
+		"name": "Cool Group",
+		"desc": "A description",
+		"channels": [],
+		"requests": []
 	}
 ]

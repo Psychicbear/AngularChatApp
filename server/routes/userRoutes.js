@@ -85,5 +85,27 @@ module.exports = {
             }
 
         })
+    },
+    
+    deleteUser: (app, users, groups) => {
+        app.post('/api/deleteUser', async (req, res) => {
+            let validate
+            try {
+                let user = users.removeUser(req.body.id)
+                groups.getAll().forEach(group => {
+                    let i = group.requests.findIndex(request => request == req.body.id)
+                    group.requests.splice(i, 1)
+                })
+
+                await users.saveFile()
+                validate = {...user.serialise(), success: true}
+            } catch(err) {
+                console.log(`Error occurred: ${err}`)
+                validate = {success: false, err: err}
+            } finally {
+                res.send(validate)
+            }
+
+        })
     }
 }

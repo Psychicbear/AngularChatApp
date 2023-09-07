@@ -1,4 +1,8 @@
-<div class="container row">
+<div class="container row py-4">
+    <div class="d-flex">
+        <h3>Groups</h3>
+        <button *ngIf="userHasAdmin('global')|| isSuper" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addGroupModal">Add</button>
+    </div>
     <div class="d-flex flex-wrap justify-content-center" *ngIf="groups$ | async; let groups">
             <div class="col-3 m-2 card border" *ngFor="let group of groups.groups; index as i">
                 <div class="card-body">
@@ -6,9 +10,16 @@
                     <h6 class="card-subtitle mb-2 text-body-secondary">{{group.desc}}</h6>
                     <div class="btn-group">
                         <button class="btn btn-primary" *ngIf="userHasAccess(group.id); else elseblock" (click)="goToGroup(group.id)">Open Group</button>
-                        <button class="btn btn-primary" *ngIf="userHasAdmin(group.id)" (click)="setRequestList(group.name, group.requests)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
+                        <button class="btn btn-primary" *ngIf="userIsPermitted(group.id)" (click)="setRequestList(group.name, group.requests)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
                             Requests
                         </button>
+                        <button class="btn btn-primary" *ngIf="userIsPermitted(group.id)" (click)="setEdit(group.id, group.name, group.desc)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
+                            Edit
+                        </button>
+                        <button class="btn btn-primary" *ngIf="userIsPermitted(group.id)" (click)="deleteGroup(group.id)">
+                            Delete
+                        </button>
+
                     </div>
 
                       
@@ -25,6 +36,62 @@
             </div>
     </div>
 </div>
+
+<!-- Modal Add Group -->
+<div id="addGroupModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Group</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Name:</label>
+                    <input class="form-control" #addname type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" #adddesc></textarea>
+                </div>
+            </form> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addGroup(addname, adddesc)">Add Group</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Edit Group -->
+<div id="editModal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Group</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label class="form-label">Name:</label>
+                    <input class="form-control" name="name" [(ngModel)]="editName" #editname type="text">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="desc" [(ngModel)]="editDesc" #editdesc></textarea>
+                </div>
+            </form> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="editGroup(editId, editname.value, editdesc.value)">Add Group</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <!-- Modal Request List -->
 <div id="requestModal" class="modal" tabindex="-1">
@@ -53,7 +120,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
         </div>
       </div>
     </div>

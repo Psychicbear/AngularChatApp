@@ -57,20 +57,15 @@
 		"id": "32b35257-bc47-4677-b0a7-55d301875668",
 		"email": "john@.com.au",
 		"username": "John",
-		"groups": [],
+		"groups": [
+			"a0acc528-1c3a-43b3-9096-bf777f208770",
+			"4fc975aa-aa88-441d-a817-82895d27e513"
+		],
 		"roles": {
-			"global": "user"
+			"global": "user",
+			"a0acc528-1c3a-43b3-9096-bf777f208770": "user",
+			"4fc975aa-aa88-441d-a817-82895d27e513": "user"
 		},
 		"password": "doe123"
-	},
-	{
-		"id": "6e123c4f-7cda-4a97-af73-fa40bb0ad3fc",
-		"email": "cool@.com.au",
-		"username": "coolguy",
-		"groups": [],
-		"roles": {
-			"global": "user"
-		},
-		"password": "password"
 	}
 ]

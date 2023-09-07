@@ -120,8 +120,7 @@ class User {
         }
 
         let rm = this.groups.splice(index, 1)
-        index = this.roles.findIndex(item => groupId in item)
-        this.roles.splice(index, 1)
+        delete this.roles['groupId']
         return rm
     }
 

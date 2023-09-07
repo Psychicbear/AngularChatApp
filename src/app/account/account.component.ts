@@ -4,6 +4,7 @@ import { User } from '../classes/user';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-account',
@@ -13,7 +14,8 @@ import { FormsModule } from '@angular/forms'
   standalone: true
 })
 export class AccountComponent {
-  auth = inject(AuthService)
+  auth: AuthService = inject(AuthService)
+  router: Router = inject(Router)
   user$: Observable<User>
   editMode: boolean = false
   error?: string
@@ -35,6 +37,16 @@ export class AccountComponent {
         this.error = res.err
       }
       
+    })
+  }
+
+  deleteAccount(){
+    this.auth.deleteAccount().subscribe(res => {
+      console.log(res)
+      if(res.success){
+        this.auth.logout()
+        this.router.navigate(['login'])
+      }
     })
   }
 

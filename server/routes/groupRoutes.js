@@ -22,7 +22,7 @@ module.exports = {
         app.get('/api/groups', (req, res) => {
             let validate
             try {
-                let all = groups.getAll()
+                let all = groups.getAll().map(group => group.serialise())
                 console.log(all[2])
                 validate = {groups: all, success: true}
             } catch(err) {
@@ -95,7 +95,7 @@ module.exports = {
                 let group = groups.getGroup(id)
                 group.edit(name, desc)
                 await groups.saveFile()
-                validate = {...group, success: true}
+                validate = {...group.serialise(), success: true}
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
                 validate = {success: false, err: err}
@@ -107,11 +107,14 @@ module.exports = {
     },
 
     // Takes {id: string}
-    deleteGroup: (app, groups) => {
+    deleteGroup: (app, groups, users) => {
         app.post('/api/deleteGroup', async (req, res) => {
             let validate
+            let id = req.body.id
             try {
-                let removed = groups.remove(req.body.id)
+                let removed = groups.remove(id)
+                let match = (user) => user.groups.find(group => group == id)
+                users.getUsers(match).forEach(user => user.removeGroup(id))
                 await groups.saveFile()
                 validate = {removed: removed, success: true}
             } catch(err) {
@@ -150,9 +153,9 @@ module.exports = {
             try {
                 const {groupId, chanId, name, desc} = req.body
                 let group = groups.getGroup(groupId)
-                group.getChannel(chanId).edit(name, desc)
+                let channel = group.getChannel(chanId).edit(name, desc)
                 await groups.saveFile()
-                validate = {...group, success: true}
+                validate = {...channel.serialise(), success: true}
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
                 validate = {success: false, err: err}

@@ -6,12 +6,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { User } from '../classes/user';
 import { NgbDropdownModule, NgbModalModule, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-channels',
   templateUrl: './channels.component.html',
   styleUrls: ['./channels.component.css'],
-  imports: [CommonModule, NgbDropdownModule, NgbModalModule],
+  imports: [CommonModule, FormsModule, NgbDropdownModule, NgbModalModule],
   standalone: true
 })
 export class ChannelsComponent {
@@ -21,16 +22,27 @@ export class ChannelsComponent {
   closeResult: string = ''
   params: ActivatedRoute = inject(ActivatedRoute)
   groupId: string = ''
+  groupName: string = ''
   isGroupAdmin: boolean = false
   isSuper: boolean = false
   channels$?: Observable<Record<string, Channel[]>>
   users$?: Observable<Record<string, User[]>>
   channel?: Channel
+  editType: string = ''
+  editId: string = ''
+  editName: string = ''
+  editDesc: string = ''
 
   constructor(){
     this.isSuper = this.auth.isSuper.getValue()
     this.params.paramMap.subscribe(url => {
       this.groupId = url.get('groupid')!
+      this.auth.getGroup(this.groupId).subscribe(res => {
+        if(res.success){
+          console.log(res)
+          this.groupName = res.name
+        }
+      })
       this.isGroupAdmin = this.auth.getRole(this.groupId) == 'admin'
       console.log(this.isGroupAdmin ? 'User is Group Admin' : 'Basic User')
       this.channels$ = this.auth.getChannels(this.groupId)
@@ -71,12 +83,46 @@ export class ChannelsComponent {
     return `dropdown${i}`
   }
 
-  addChannel(name: string, desc: string, modal: any){
+  addChannel(name: any, desc: any){
     console.log(desc)
-    this.auth.addChannel(this.groupId, name, desc).subscribe(res => {
+    this.auth.addChannel(this.groupId, name.value, desc.value).subscribe(res => {
+      if(res.success){
+        this.channels$ = this.auth.getChannels(this.groupId)
+        name.value = ''
+        desc.value = ''
+      }
+      
+    })
+  }
+
+  setEdit(id: string, name: string, desc: string){
+    this.editId = id, this.editName = name, this.editDesc = desc
+  }
+
+  clearEdit(){
+    this.editId = '', this.editName = '', this.editDesc = ''
+  }
+
+
+  editChannel(name: string, desc: string){
+      this.auth.editChannel(this.groupId, this.editId, name, desc).subscribe(res => {
+        if(res.success){
+          this.channels$ = this.auth.getChannels(this.groupId)
+          let {success, err, ...channel} = res
+          this.channel = channel as Channel
+          this.clearEdit()
+        }
+      })
+  }
+
+
+  deleteChannel(id: string){
+    this.auth.deleteChannel(this.groupId, id).subscribe(res => {
       console.log(res)
-      modal.close('Save click')
-      this.channels$ = this.auth.getChannels(this.groupId)
+      if(res.success){
+        this.channels$ = this.auth.getChannels(this.groupId)
+        this.channel = undefined
+      }
     })
   }
 
