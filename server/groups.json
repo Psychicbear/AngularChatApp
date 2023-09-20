@@ -11,8 +11,7 @@
 				"messages": []
 			}
 		],
-		"requests": [
-		]
+		"requests": []
 	},
 	{
 		"id": "4fc975aa-aa88-441d-a817-82895d27e513",
@@ -51,6 +50,20 @@
 		"name": "Cool Group",
 		"desc": "A description",
 		"channels": [],
+		"requests": []
+	},
+	{
+		"id": "373ee3f5-8fbb-4b54-a528-9478e5257ac5",
+		"name": "Hello",
+		"desc": "sgdfg",
+		"channels": [
+			{
+				"id": "6daddc0a-5906-4a88-86cd-9927b09c4233",
+				"name": "Main",
+				"desc": "The main channel",
+				"messages": []
+			}
+		],
 		"requests": []
 	}
 ]
