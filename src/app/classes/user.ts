@@ -1,6 +1,6 @@
 type Role = Record<string, number>
 export interface User {
-    id: string,
+    _id: string,
     username: string,
     email: string,
     roles: Roles,

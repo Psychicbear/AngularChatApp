@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { Observable, forkJoin, from, of } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, from, of } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Group } from '../classes/group';
+import { User } from '../classes/user';
 
 @Component({
   selector: 'app-groups',
@@ -15,29 +17,39 @@ import { FormsModule } from '@angular/forms';
 export class GroupsComponent {
   auth: AuthService = inject(AuthService)
   router: Router = inject(Router)
-  groups$: Observable<any>
-  usergroups: string[] = []
+  userGroups$: BehaviorSubject<Group[]> = new BehaviorSubject([] as Group[])
+  groups$: BehaviorSubject<Group[]> = new BehaviorSubject([] as Group[])
   userId: string = ''
+  requestListId: string = ''
   requestListName: string = ''
-  requestList?: Observable<any>
+  requestList: BehaviorSubject<User[]> = new BehaviorSubject([] as User[])
   isAdmin: boolean = false
   isSuper: boolean = false
   editId: string = ''
   editName: string = ''
   editDesc: string = ''
 
+  //TODO: Could convert edit page to a behaviourSubject which is updated with edit.next()
   constructor(){
-    this.groups$ = this.auth.getGroups()
-    this.usergroups = this.auth.groups!
-    console.log(['groups', this.usergroups])
-    this.userId = this.auth.id
+    this.populateGroups()
+    this.userId = this.auth._id
     this.isAdmin = this.userHasAdmin('global')
     this.isSuper = this.auth.isSuper.getValue()
     console.log(this.auth.roles)
   }
 
+  populateGroups(){
+    this.auth.getGroups().subscribe(res => {
+      console.log(res)
+      if(res.success){
+        this.groups$.next(res.remaining)
+        this.userGroups$.next(res.user)
+      }
+    })
+  }
+
   userHasAccess(id: string){
-    return this.usergroups.find(group => group == id) || this.isSuper
+    return this.isSuper || this.userGroups$.getValue().find(group => group._id == id)
   }
 
   userHasAdmin(id: string){
@@ -58,17 +70,51 @@ export class GroupsComponent {
     return requests.find(id => id == this.userId)
   }
 
-  setRequestList(name: string, requests: string[]){
-    console.log({name, requests})
+  setRequestList(name: string, groupId: string){
+    console.log({name, groupId})
     this.requestListName = name
-    this.requestList = forkJoin(requests.map(req => this.auth.getUser(req)))
+    this.requestListId = groupId
+    this.auth.getRequests(groupId).subscribe(res => {
+      console.log(res)
+      if(res.success){
+        this.requestList.next(res.requests)
+      }
+    })
   }
 
   requestJoin(groupId: string){
     this.auth.requestJoin(this.userId, groupId).subscribe(res => {
       console.log(res)
       if(res.success){
-        this.groups$ = this.auth.getGroups()
+        this.populateGroups()
+      }
+    })
+  }
+
+  acceptRequest(userId: string , groupId: string){
+    this.auth.acceptRequest(userId, groupId).subscribe(res => {
+      console.log(res)
+      if(res.success){
+        this.auth.getRequests(groupId).subscribe(res => {
+          console.log(res)
+          if(res.success){
+            this.requestList.next(res.requests)
+          }
+        })
+      }
+    })
+  }
+
+  denyRequest(userId: string , groupId: string){
+    this.auth.denyRequest(userId, groupId).subscribe(res => {
+      console.log(res)
+      if(res.success){
+        this.auth.getRequests(groupId).subscribe(res => {
+          console.log(res)
+          if(res.success){
+            this.requestList.next(res.requests)
+          }
+        })
       }
     })
   }
@@ -80,7 +126,7 @@ export class GroupsComponent {
   addGroup(name: any, desc: any){
     this.auth.addGroup(name.value, desc.value).subscribe(res => {
       if(res.success){
-        this.groups$ = this.auth.getGroups()
+        this.populateGroups()
         name.value = ''
         desc.value = ''
       }
@@ -94,7 +140,7 @@ export class GroupsComponent {
   editGroup(id: string, name: string, desc: string){
     this.auth.editGroup(id, name, desc).subscribe(res => {
       if(res.success){
-        this.groups$ = this.auth.getGroups()
+        this.populateGroups()
       }
     })
   }
@@ -102,7 +148,7 @@ export class GroupsComponent {
   deleteGroup(id: string){
     this.auth.deleteGroup(id).subscribe(res => {
       if(res.success){
-        this.groups$ = this.auth.getGroups()
+        this.populateGroups()
       }
     })
   }

@@ -1,11 +1,12 @@
 module.exports = {
     authUser: (app, db) => {
-        app.post('/api/login', (req, res) => {
+        app.post('/api/login', async (req, res) => {
             let creds = req.body
             let validate
             try {
-                let user = db.authUser(creds.email, creds.password)
-                validate = {...user.serialise(), success: true}
+                let user = await db.authUser(creds.email, creds.password)
+                console.log(user)
+                validate = {...user, success: true}
             } catch (err) {
                 console.log(`Error occurred: ${err}`)
                 validate = {success: false, err: err}

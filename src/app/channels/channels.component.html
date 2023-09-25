@@ -74,8 +74,8 @@
                 <div class="container-fluid">
                     <h2>{{channel.name}}</h2>
                     <div *ngIf="isGroupAdmin || isSuper" class="btn-group">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="setEdit(channel.id, channel.name, channel.desc)">Edit</button>
-                        <button class="btn btn-danger" (click)="deleteChannel(channel.id)">Delete</button>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="setEdit(channel._id, channel.name, channel.desc)">Edit</button>
+                        <button class="btn btn-danger" (click)="deleteChannel(channel._id)">Delete</button>
                     </div>
                 </div>
             </nav>

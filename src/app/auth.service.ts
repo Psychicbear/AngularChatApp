@@ -21,11 +21,11 @@ interface GenericResponse<T> {
   providedIn: 'root'
 })
 export class AuthService{
-  user: BehaviorSubject<User> = new BehaviorSubject({id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
+  user: BehaviorSubject<User> = new BehaviorSubject({_id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false)
   isSuper: BehaviorSubject<boolean> = new BehaviorSubject(false)
   remember?: boolean
-  id: string = ''
+  _id: string = ''
   username: string = ''
   email: string = ''
   groups: string[] = []
@@ -43,11 +43,11 @@ export class AuthService{
     }
 
     this.user.subscribe(data => {
-      this.isAuthenticated.next(data.id != '')
-      console.log(data.id != '' ? "User is Authenticated" : "User is not logged in")
+      this.isAuthenticated.next(data._id != '')
+      console.log(data._id != '' ? "User is Authenticated" : "User is not logged in")
       this.isSuper.next(data.roles.global == 'super')
       console.log(data.roles.global == 'super' ? "User is Super" : "User is not Super")
-      this.id = data.id
+      this._id = data._id
       this.username = data.username
       this.email = data.email
       this.roles = data.roles
@@ -103,15 +103,27 @@ export class AuthService{
   logout(){
     sessionStorage.clear()
     localStorage.clear()
-    this.user.next({id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
+    this.user.next({_id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
   }
 
   getGroups(){
     return this.http.get<any>('http://localhost:3000/api/groups')
   }
 
+  getRequests(id: string){
+    return this.http.get<any>('http://localhost:3000/api/requests/' + id)
+  }
+
   requestJoin(userId: string, groupId: string){
     return this.http.post<GenericResponse<any>>('http://localhost:3000/api/requestJoin', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
+  }
+
+  acceptRequest(userId: string, groupId: string){
+    return this.http.post<GenericResponse<any>>('http://localhost:3000/api/acceptRequest', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
+  }
+
+  denyRequest(userId: string, groupId: string){
+    return this.http.post<GenericResponse<any>>('http://localhost:3000/api/denyRequest', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
   }
 
   getUser(id: string){
@@ -120,7 +132,7 @@ export class AuthService{
 
   //WIP, pulls user data from either cachedUsers or api
   fetchUser(id: string){
-    let user = this.cachedUsers.find(user => user.id == id)
+    let user = this.cachedUsers.find(user => user._id == id)
     let local = of(user)
     let api = this.getUser(id)
     
@@ -131,7 +143,7 @@ export class AuthService{
   }
 
   deleteAccount(){
-    return this.http.post<any>('http://localhost:3000/api/deleteUser', {id: this.id}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<any>('http://localhost:3000/api/deleteUser', {id: this._id}, {headers: {'ContentType': 'Application/json'}})
   }
 
   getChannels(groupId: string){
