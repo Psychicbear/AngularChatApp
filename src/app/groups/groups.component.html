@@ -14,7 +14,7 @@
                     <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
                         Requests
                     </button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group._id, group.name, group.desc)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
                         Edit
                     </button>
                     <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)">
@@ -47,7 +47,7 @@
                     <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
                         Requests
                     </button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group._id, group.name, group.desc)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
                         Edit
                     </button>
                     <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)">
@@ -100,28 +100,28 @@
   </div>
 
   <!-- Modal Edit Group -->
-<div id="editModal" class="modal" tabindex="-1">
+<div id="editModal" class="modal" tabindex="-1" *ngIf="editGroup$ | async as edit">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Add Group</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-            <form>
+        <div class="modal-body" >
+            <form >
                 <div class="mb-3">
                     <label class="form-label">Name:</label>
-                    <input class="form-control" name="name" [(ngModel)]="editName" #editname type="text">
+                    <input class="form-control" name="name" [(ngModel)]="edit.name" value="{{edit.name}}" type="text">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Description</label>
-                    <textarea class="form-control" name="desc" [(ngModel)]="editDesc" #editdesc></textarea>
+                    <textarea class="form-control" name="desc" [(ngModel)]="edit.desc" value="{{edit.desc}}"></textarea>
                 </div>
             </form> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="editGroup(editId, editname.value, editdesc.value)">Add Group</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="editGroup(edit)">Add Group</button>
         </div>
       </div>
     </div>

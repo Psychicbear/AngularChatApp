@@ -1,21 +1,25 @@
 let app = require('express')()
 let cors = require('cors')
 let http = require('http').Server(app)
-const fs = require('fs/promises')
-let uuid = require('uuid').v4
+let sockets = require('./sockets.js')
 const { MongoClient } = require('mongodb')
 let connection = new MongoClient('mongodb://192.168.1.254:27017/')
 let db
 const bodyparser = require('body-parser')
-let port = 3000;
-const Users = require('./models/users') 
-const Groups = require('./models/groups')
-// let userData = Users.newUsers('users.json')
-// let groupData = Groups.newGroups('groups.json')
+const PORT = 3000;
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "http://localhost:4200",
+        methods: ['GET', 'POST'],
+    }
+})
+
+sockets.connect(io, PORT)
+
 app.use(cors())
 app.use(bodyparser.json())
-app.listen(port, async () => {
-    console.log(`Launched local server at port ${port}`)
+app.listen(PORT, async () => {
+    console.log(`Launched local server at port ${PORT}`)
     await connection.connect()
     db = require('./models/database').newDatabase(connection.db('chat'))
 

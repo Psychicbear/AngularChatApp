@@ -2,24 +2,24 @@ const {Validator} = require('../models/validate')
 
 module.exports = {  
 
-    //Takes ID in params
+    //Takes ID in params, uses find(), returns Group
     getGroup: (app, db) => {
         app.get('/api/group/:id', (req, res) => {
             let validate = new Validator(res)
             try {
                 console.log(req.params.id)
                 let group = db.getGroup(req.params.id)
-                validate = {...group.serialise(), success: true}
+                validate.success(group)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {...validate, error: err}
+                validate.error(err)
             } finally {
                 res.send(validate)
             }
         })
     },
 
-    //Simply returns all groups
+    //Uses find({}) to get all Groups, returns array of Groups
     getGroups: (app, db) => {
         app.get('/api/groups', async (req, res) => {
             let validate = new Validator(res)
@@ -34,82 +34,70 @@ module.exports = {
         })
     },
 
-    // Takes ID in params
+    // Takes ID in params, uses find(), returns Group
     getChannels: (app, db) => {
         app.get('/api/channels/:id', (req, res) => {
             let validate = new Validator(res)
             try {
                 console.log(req.params.id)
-                let channels = db.getGroup(req.params.id).channels
-                validate = {channels: channels, success: true}
+                let channels = db.getGroup(req.params.id)
+                validate.success(channels)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {...validate, error: err}
-            } finally {
-                res.send(validate)
-            }
+                validate.error(err)
+            } 
         })
     },
     
-    // Takes {name: string, desc: string}
+    // Takes {name: string, desc: string}, uses insertOne()
+    // Returns created Group
     createGroup: (app, db) => {
         app.post('/api/addGroup', async (req, res) => {
             let {name, desc} = req.body
             let validate = new Validator(res)
             try {
-                let group = db.add(name, desc)
-                validate = {...group.serialise(), success: true}
-                await db.saveFile()
+                let group = db.createGroup(name, desc)
+                validate.success(group)
             } catch (err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
         })
     },
     
-    // Takes {id: string, name: string, desc: string}
+    // Takes updated user, uses findOneAndUpdate(), 
+    // returns updated group
     editGroup: (app, db) => {
         app.post('/api/editGroup', async (req, res) => {
             let validate = new Validator(res)
             try {
-                const {id, name, desc} = req.body
-                let group = db.getGroup(id)
-                group.edit(name, desc)
-                await db.saveFile()
-                validate = {...group.serialise(), success: true}
+                const {update} = req.body
+                let group = db.updateGroup(update)
+                validate.success(group)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
-            }
-
+                validate.error(err)
+            } 
         })
     },
 
-    // Takes {id: string}
-    deleteGroup: (app, db, users) => {
+    // Takes id, uses findOneAndDelete(), returns {removed: Group}
+    deleteGroup: (app, db) => {
         app.post('/api/deleteGroup', async (req, res) => {
             let validate = new Validator(res)
-            let id = req.body.id
+            let { id } = req.body
             try {
-                let removed = db.remove(id)
-                let match = (user) => user.groups.find(group => group == id)
-                users.getUsers(match).forEach(user => user.removeGroup(id))
-                await db.saveFile()
-                validate = {removed: removed, success: true}
+                let removed = db.delGroup(id)
+                validate.success({removed: removed})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
         })
     },
 
-    // Takes {id: string, name: string, desc: string}
+    // Takes {id: string, name: string, desc: string},
+    // Uses insertOne(), returns updated Group
     addChannel: (app, db) => {
         app.post('/api/addChannel', async (req, res) => {
             let validate = new Validator(res)
@@ -117,19 +105,17 @@ module.exports = {
                 const {id, name, desc} = req.body
                 let group = db.getGroup(id)
                 group.addChannel(name, desc)
-                await db.saveFile()
-                validate = {...group, success: true}
+                validate.success(group)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
-            }
-
+                validate.error(err)
+            } 
         })
     },
 
+    // REQUIRES UPDATE TO CHANNEL COLLECTION
     // Takes {groupId: string, chanId: string, name: string, desc: string}
+    // Uses findOneAndUpdate(), returns updated Group
     editChannel: (app, db) => {
         app.post('/api/editChannel', async (req, res) => {
             let validate = new Validator(res)
@@ -137,38 +123,32 @@ module.exports = {
                 const {groupId, chanId, name, desc} = req.body
                 let group = db.getGroup(groupId)
                 let channel = group.getChannel(chanId).edit(name, desc)
-                await db.saveFile()
-                validate = {...channel.serialise(), success: true}
+                validate.success(channel)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
-
         })
     },
 
-    // Takes {groupId: string, chanId: string}
+    // REQUIRES UPDATE TO CHANNEL COLLECTION
+    // Takes {groupId: string, chanId: string}, uses findOneAndUpdate(),
+    // Returns removed Channel
     deleteChannel: (app, db) => {
         app.post('/api/deleteChannel', async (req, res) => {
             let validate = new Validator(res)
             try {
                 const {groupId, chanId} = req.body
                 let removed = db.getGroup(groupId).removeChannel(chanId)
-                await db.saveFile()
-                validate = {removed: removed, success: true}
+                validate.success({deleted: removed})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
-
         })
     },
 
-    // Takes ID in params
+    // Takes ID in params, uses find(), returns array of Users
     getRequests: (app, db) => {
         app.get('/api/requests/:id', async (req, res) => {
             let validate = new Validator(res)
@@ -184,7 +164,8 @@ module.exports = {
         })
     },
 
-    // Takes {userId: string, groupId: string}
+    // Takes {userId: string, groupId: string}, uses findOneAndInsert(),
+    // Returns updated Group
     requestJoin: (app, db) => {
         app.post('/api/requestJoin', async (req, res) => {
             const {userId, groupId} = req.body
@@ -193,7 +174,7 @@ module.exports = {
             try {
                 let add = db.addRequest(userId, groupId)
                 console.log(add)
-                validate.success()
+                validate.success(add)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
                 validate.error(err)
@@ -201,7 +182,8 @@ module.exports = {
         })
     },
 
-    // Takes {userId: string, groupId: string}
+    // Takes {userId: string, groupId: string}, uses findOneAndUpdate(),
+    // Returns the userId and updated Group as {user, joined}
     acceptRequest: (app, db) => {
         app.post('/api/acceptRequest', async (req, res) => {
             const {userId, groupId} = req.body
@@ -219,7 +201,8 @@ module.exports = {
         })
     },
 
-    // Takes {userId: string, groupId: string}
+    // Takes {userId: string, groupId: string}, uses findOneAndUpdate()
+    // Returns the userId and group as {user, denied}
     denyRequest: (app, db) => {
         app.post('/api/denyRequest', async (req, res) => {
             const {userId, groupId} = req.body

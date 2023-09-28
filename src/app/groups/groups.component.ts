@@ -25,6 +25,7 @@ export class GroupsComponent {
   requestList: BehaviorSubject<User[]> = new BehaviorSubject([] as User[])
   isAdmin: boolean = false
   isSuper: boolean = false
+  editGroup$: BehaviorSubject<Group> = new BehaviorSubject({} as Group)
   editId: string = ''
   editName: string = ''
   editDesc: string = ''
@@ -133,12 +134,12 @@ export class GroupsComponent {
     })
   }
 
-  setEdit(id: string, name: string, desc: string){
-    this.editId = id, this.editName = name, this.editDesc = desc
+  setEdit(group: Group){
+    this.editGroup$.next(group)
   }
 
-  editGroup(id: string, name: string, desc: string){
-    this.auth.editGroup(id, name, desc).subscribe(res => {
+  editGroup(group: Group){
+    this.auth.editGroup(group).subscribe(res => {
       if(res.success){
         this.populateGroups()
       }

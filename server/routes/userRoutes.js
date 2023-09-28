@@ -1,96 +1,96 @@
+const {Validator} = require('../models/validate.js')
 module.exports = {
+    
+    //Uses FindOne(), filtering for matching email and password
+    //Returns User
     authUser: (app, db) => {
         app.post('/api/login', async (req, res) => {
             let creds = req.body
-            let validate
+            let validate = new Validator(res)
             try {
                 let user = await db.authUser(creds.email, creds.password)
                 console.log(user)
-                validate = {...user, success: true}
+                validate.success(user)
             } catch (err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
         })
     },
     
+
+    //Uses FindOne(), returning User
     getUser: (app, db) => {
         app.get('/api/user/:id', (req, res) => {
-            let validate
+            let validate = new Validator(res)
             try {
                 console.log(req.params.id)
                 let user = db.getUser(req.params.id)
-                validate = {...user.serialise(), success: true}
+                validate.success(user)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {...validate, error: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
         })
     },
 
+
+    //Uses Find(), finds all users in specified group
+    //returns list of users as {users: groupUsers}
     getUsersByGroup: (app, db) => {
         app.get('/api/user/byGroup/:id', (req, res) => {
-            let validate
+            let validate = new Validator(res)
             try {
                 let id = req.params.id
                 let match = (user) => {return user.roles.global == "super" || user.groups.find(group => group == id)}
                 let groupUsers = db.getUsers(match)
                 
-                groupUsers = groupUsers.map(user => user.serialise())
-                validate = {users: groupUsers, success: true}
+                validate.success({users: groupUsers})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {...validate, error: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
         })
     },
     
+
+    //Uses insertOne(), returns the newly created user
     createUser: (app, db) => {
         app.post('/api/register', async (req, res) => {
             let creds = req.body
-            let validate
+            let validate = new Validator(res)
             try {
                 let user = db.addUser(creds.email, creds.username, creds.password)
-                validate = {...user.serialise(), success: true}
-                await db.saveFile()
+                validate.success(user)
             } catch (err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
         })
     },
 
     
+    //Uses findOneAndUpdate(), returns the updated user
     editUser: (app, db) => {
         app.post('/api/editUser', async (req, res) => {
-            let validate
+            let validate = new Validator(res)
             try {
                 const {id, ...fields} = req.body
                 let user = db.getUser(id)
                 user.edit(fields)
-                await db.saveFile()
-                validate = {...user, success: true}
+                validate.success(user)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
-
         })
     },
     
+
+    //Uses findOneAndDelete(), returns deleted User
     deleteUser: (app, db) => {
         app.post('/api/deleteUser', async (req, res) => {
-            let validate
+            let validate = new Validator(res)
             try {
                 let user = db.removeUser(req.body.id)
                 db.getAll().forEach(group => {
@@ -98,15 +98,11 @@ module.exports = {
                     group.requests.splice(i, 1)
                 })
 
-                await db.saveFile()
-                validate = {...user.serialise(), success: true}
+                validate.success({deleted: user})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
-                validate = {success: false, err: err}
-            } finally {
-                res.send(validate)
+                validate.error(err)
             }
-
         })
     }
 }

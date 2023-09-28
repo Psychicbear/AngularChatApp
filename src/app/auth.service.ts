@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs';
 import { User, Roles } from './classes/user';
 import { Channel, Group } from './classes/group';
+import { Socket, io } from 'socket.io-client';
 
 
 interface GenericResponse<T> {
@@ -31,17 +32,23 @@ export class AuthService{
   groups: string[] = []
   roles: Roles = {global: ''}
   cachedUsers: User[] = []
+  socket?: Socket
 
   constructor(private http: HttpClient) {
+    //Loads login data from session or local storage
     let existing = sessionStorage.getItem('user')
     if(!existing){
       existing = localStorage.getItem('user')
     } 
 
+    //Loads found data into auth service and connects to socket
     if(existing){
       this.user.next(JSON.parse(existing) as User)
+      this.socket = io('http://localhost:3000')
     }
 
+    //Loads necessary behavioursubjects which components will monitor for changes.
+    //Individual user attribute assignment may no longer be necessary
     this.user.subscribe(data => {
       this.isAuthenticated.next(data._id != '')
       console.log(data._id != '' ? "User is Authenticated" : "User is not logged in")
@@ -57,10 +64,13 @@ export class AuthService{
     })
   }
 
+
   getSelf(){
     return this.user.asObservable()
   }
 
+
+  //Loops through user roles and finds one which matches passed in ID
   getRole(id: string){
     let role = ''
     for (const [key, value] of Object.entries(this.roles)) {
@@ -70,8 +80,9 @@ export class AuthService{
     return role
   }
 
+
   isLoggedIn(){
-    return this.isAuthenticated
+    return this.isAuthenticated.getValue()
   }
 
 
@@ -79,6 +90,7 @@ export class AuthService{
     return this.http.post<GenericResponse<User>>('http://localhost:3000/api/updateme', user, {headers: {'ContentType': 'Application/json'}})
   }
 
+  //Saves login to session storage, saving also to local storage if remember me is ticked
   saveSession(user: User, remember: boolean = false){
     sessionStorage.setItem('user', JSON.stringify(user))
     if(remember){
@@ -96,6 +108,7 @@ export class AuthService{
     return req
   }
 
+  
   register(email: string, username:string, password: string){
     return this.http.post<any>('http://localhost:3000/api/register', {email: email, username: username, password: password}, {headers: {'ContentType': 'Application/json'}})
   }
@@ -162,8 +175,8 @@ export class AuthService{
     return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/addGroup', {name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
   }
 
-  editGroup(id: string, name: string, desc: string){
-    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/editGroup', {id: id, name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+  editGroup(group: Group){
+    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/editGroup', {update: group}, {headers: {'ContentType': 'Application/json'}})
   }
 
   deleteGroup(id: string){
