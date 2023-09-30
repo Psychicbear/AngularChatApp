@@ -1,7 +1,7 @@
 <div class="container row py-4">
     <div class="d-flex">
         <h3>Groups</h3>
-        <button *ngIf="userHasAdmin('global')|| isSuper" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addGroupModal">Add</button>
+        <button *ngIf="userIsPermitted('global')" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addGroupModal">Add</button>
     </div>
     <h1>Your Groups</h1>
     <div class="d-flex flex-wrap justify-content-center" *ngIf="userGroups$ | async; let groups">
@@ -111,17 +111,17 @@
             <form >
                 <div class="mb-3">
                     <label class="form-label">Name:</label>
-                    <input class="form-control" name="name" [(ngModel)]="edit.name" value="{{edit.name}}" type="text">
+                    <input class="form-control" #name name="name" [(ngModel)]="edit.name" type="text">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Description</label>
-                    <textarea class="form-control" name="desc" [(ngModel)]="edit.desc" value="{{edit.desc}}"></textarea>
+                    <textarea class="form-control" #desc name="desc" [(ngModel)]="edit.desc"></textarea>
                 </div>
             </form> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="editGroup(edit)">Add Group</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="editGroup(name.value, desc.value)">Add Group</button>
         </div>
       </div>
     </div>

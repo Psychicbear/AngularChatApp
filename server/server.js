@@ -3,7 +3,7 @@ let cors = require('cors')
 let http = require('http').Server(app)
 let sockets = require('./sockets.js')
 const { MongoClient } = require('mongodb')
-let connection = new MongoClient('mongodb://192.168.1.254:27017/')
+let connection = new MongoClient('mongodb://localhost:27017/')
 let db
 const bodyparser = require('body-parser')
 const PORT = 3000;
@@ -13,6 +13,9 @@ const io = require('socket.io')(http, {
         methods: ['GET', 'POST'],
     }
 })
+
+let userRoutes = require('./routes/userRoutes')
+let groupRoutes = require('./routes/groupRoutes')
 
 sockets.connect(io, PORT)
 
@@ -45,8 +48,7 @@ app.listen(PORT, async () => {
 
 })
 
-let userRoutes = require('./routes/userRoutes')
-let groupRoutes = require('./routes/groupRoutes')
+
 
 
 

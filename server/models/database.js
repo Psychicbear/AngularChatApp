@@ -78,13 +78,23 @@ class DatabaseWrapper {
 
     //Create Group CRUD function
     async createGroup(name, desc){
+        let groupId = new ObjectId()
+        let chanId = new ObjectId()
+
+        let newChannel = {
+            group: groupId, name: 'Main', 
+            desc: 'Main channel for the group', messages: []
+        }
+        
         let newGroup = {
             name: name, desc: desc, 
-            channels: [], 
-            requests: []
+            channels: [chanId], requests: []
         }
+        
+        let insertedChan = await this.channels.insertOne(newChannel)
+        console.log(insertedChan)
 
-        this.groups.insertOne(newGroup)
+        return await this.groups.insertOne(newGroup)
     }
 
     //Read Group CRUD function
@@ -134,23 +144,62 @@ class DatabaseWrapper {
 
 
     //Update Group CRUD function
-    async updateGroup(user){
-        return await this.groups.findOneAndUpdate({_id: new ObjectId(user.id)}, {$set: user})
+    async updateGroup(group){
+        return await this.groups.findOneAndUpdate({_id: new ObjectId(group._id)}, {$set: {name: group.name, desc: group.desc}})
     }
     
     //Delete Group CRUD function
     async delGroup(id){
-        return await this.groups.findOneAndDelete({_id: new ObjectId(id)})
+        let deletedGroup = await this.groups.findOneAndDelete({_id: new ObjectId(id)})
+        console.log(deletedGroup)
+
+        let deletedChannels = await this.channels.deleteMany({group: {$in: deletedGroup.channels}})
+        console.log(deletedChannels)
+
+        return deletedGroup
     }
 
     //Create Channel CRUD function
-    async addChannel(groupId, name, desc){
+    async addChannel(id, name, desc){
+        let groupId = new ObjectId(id)
+        let chanId = new ObjectId()
+
         let newChannel = {
-            name: name, desc: desc, 
-            messages: []
+            _id: chanId, group: groupId, name: name, 
+            desc: desc, messages: []
         }
 
-        this.groups.insertOne(newChannel)
+        let addedChan = await this.channels.insertOne(newChannel)
+        console.log(addedChan)
+
+        let updatedGroup = await this.groups.findOneAndUpdate({_id: groupId}, {$push: {channels: chanId}})
+        console.log(updatedGroup)
+
+        return addedChan
+    }
+
+    async getChannels(ids){
+        let channels = ids.map(id => new ObjectId(id))
+        console.log(channels)
+
+        return await this.channels.find({_id: {$in: channels}}, {projection: {_id: 1, name: 1}}).toArray()
+    }
+
+    async getChannel(id){
+        return await this.channels.findOne({_id: new ObjectId(id)})
+    }
+
+    async editChannel(channel){
+        return await this.channels.findOneAndUpdate({_id: new ObjectId(channel._id)}, {$set: {name: channel.name, desc: channel.desc}})
+    }
+
+    async deleteChannel(chanId){
+        let deletedChan = await this.channels.findOneAndDelete({_id: new ObjectId(chanId)})
+        console.log(deletedChan)
+
+        let updateGroup = await this.group.findOneAndUpdate({_id: deletedChan.group}, {$pull: {channels: deletedChan._id}})
+        console.log(updateGroup)
+        return deletedChan
     }
 
 }

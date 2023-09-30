@@ -27,7 +27,7 @@
   </div>
 
 <!-- Edit Modal -->
-<div id="editChannelModal" class="modal" tabindex="-1">
+<div id="editChannelModal" *ngIf="edit$ | async as edit" class="modal" tabindex="-1">
 <div class="modal-dialog">
     <div class="modal-content">
     <div class="modal-header">
@@ -38,11 +38,11 @@
         <form>
             <div class="mb-3">
                 <label class="form-label">Name:</label>
-                <input class="form-control" name="name" [(ngModel)]="editName" #name type="text">
+                <input class="form-control" name="name" [(ngModel)]="edit.name" #name type="text">
             </div>
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <textarea class="form-control" name="desc" [(ngModel)]="editDesc" #desc></textarea>
+                <textarea class="form-control" name="desc" [(ngModel)]="edit.desc" #desc></textarea>
             </div>
         </form> 
     </div>
@@ -66,35 +66,34 @@
                 <button *ngIf="isGroupAdmin || isSuper" class="btn btn-primary d-inline" type="button" data-bs-toggle="modal" data-bs-target="#addChannelModal">Add</button>
             </div>
             <div class="" *ngFor="let channel of channels['channels']">
-                <div class="btn btn-primary" (click)="setChannel(channel)">{{channel.name}}</div>
+                <div class="btn btn-primary" (click)="channel$.next(channel)">{{channel.name}}</div>
             </div>
         </div>
-        <div *ngIf="channel; else nochannel" class="col d-flex flex-column align-space-between">
-            <nav class="navbar row">
-                <div class="container-fluid">
-                    <h2>{{channel.name}}</h2>
-                    <div *ngIf="isGroupAdmin || isSuper" class="btn-group">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="setEdit(channel._id, channel.name, channel.desc)">Edit</button>
-                        <button class="btn btn-danger" (click)="deleteChannel(channel._id)">Delete</button>
-                    </div>
-                </div>
-            </nav>
-            <form class="">
-                <input>
-            </form>
-        </div>
-        <ng-template #nochannel>
-            <div class="col">
+        <div *ngIf="channel$ | async as channel" class="col d-flex flex-column align-space-between">
+            <ng-template *ngIf="channel.name; else nochannel">
                 <nav class="navbar row">
                     <div class="container-fluid">
-                        <h2>No Channel Selected</h2>
+                        <h2>{{channel.name}}</h2>
+                        <div *ngIf="isGroupAdmin || isSuper" class="btn-group">
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="edit$.next(channel)">Edit</button>
+                            <button class="btn btn-danger" (click)="deleteChannel(channel._id)">Delete</button>
+                        </div>
                     </div>
                 </nav>
-            </div>
-
-            
-            
-        </ng-template>
+                <form class="">
+                    <input>
+                </form>
+            </ng-template>
+            <ng-template #nochannel>
+                <div class="col">
+                    <nav class="navbar row">
+                        <div class="container-fluid">
+                            <h2>No Channel Selected</h2>
+                        </div>
+                    </nav>
+                </div>
+            </ng-template>
+        </div>
         <div class="col-2 py-2 bg-tertiary" *ngIf="users$ | async as users">
             <h4>Users</h4>
             <div class="">

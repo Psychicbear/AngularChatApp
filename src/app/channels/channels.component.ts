@@ -1,25 +1,22 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Channel } from '../classes/group' 
+import { Channel, Group } from '../classes/group' 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { User } from '../classes/user';
-import { NgbDropdownModule, NgbModalModule, NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-channels',
   templateUrl: './channels.component.html',
   styleUrls: ['./channels.component.css'],
-  imports: [CommonModule, FormsModule, NgbDropdownModule, NgbModalModule],
+  imports: [CommonModule, FormsModule],
   standalone: true
 })
 export class ChannelsComponent {
   auth: AuthService = inject(AuthService)
   router: Router = inject(Router)
-  modal: NgbModal = inject(NgbModal)
-  closeResult: string = ''
   params: ActivatedRoute = inject(ActivatedRoute)
   groupId: string = ''
   groupName: string = ''
@@ -27,56 +24,48 @@ export class ChannelsComponent {
   isSuper: boolean = false
   channels$?: Observable<Record<string, Channel[]>>
   users$?: Observable<Record<string, User[]>>
-  channel?: Channel
-  editType: string = ''
-  editId: string = ''
-  editName: string = ''
-  editDesc: string = ''
+  channel$: BehaviorSubject<Channel> = new BehaviorSubject({} as Channel)
+  edit$: BehaviorSubject<Channel> = new BehaviorSubject({} as Channel)
 
   constructor(){
     this.isSuper = this.auth.isSuper.getValue()
     this.params.paramMap.subscribe(url => {
       this.groupId = url.get('groupid')!
-      this.auth.getGroup(this.groupId).subscribe(res => {
-        if(res.success){
-          console.log(res)
-          this.groupName = res.name
-        }
-      })
+      this.loadGroup()
+      this.users$ = this.auth.getUsersInGroup(this.groupId)
       this.isGroupAdmin = this.auth.getRole(this.groupId) == 'admin'
       console.log(this.isGroupAdmin ? 'User is Group Admin' : 'Basic User')
-      this.channels$ = this.auth.getChannels(this.groupId)
-      this.users$ = this.auth.getUsersInGroup(this.groupId)
+
+    })
+
+    this.channels$?.subscribe(chan => {
+      this.auth.socket //Connect socket to channel
     })
   }
 
-  open(content: any) {
-		this.modal.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(
-			(result) => {
-				this.closeResult = `Closed with: ${result}`;
-			},
-			(reason) => {
-				this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-			},
-		);
-	}
+  //Loads group by ID then gets the list of channels
+  loadGroup(){
+    this.auth.getGroup(this.groupId).subscribe(res => {
+      if(res.success){
+        console.log(res)
+        console.log(res.channels)
+        this.groupName = res.name
+        this.channels$ = this.auth.getChannels(res.channels)
+      }
+    })
+  }
 
-  private getDismissReason(reason: any): string {
-		if (reason === ModalDismissReasons.ESC) {
-			return 'by pressing ESC';
-		} else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-			return 'by clicking on a backdrop';
-		} else {
-			return `with: ${reason}`;
-		}
-	}
+  loadChannel(id: string){
+    this.auth.getChannel(id).subscribe(res => {
+      let {success, ...channel} = res
+      this.channel$.next(channel)
+    })
+  }
+
+
 
   log(i: any){
     console.log(i)
-  }
-
-  setChannel(chan: Channel){
-    this.channel = chan
   }
 
   dropdownId(i:number){
@@ -87,30 +76,21 @@ export class ChannelsComponent {
     console.log(desc)
     this.auth.addChannel(this.groupId, name.value, desc.value).subscribe(res => {
       if(res.success){
-        this.channels$ = this.auth.getChannels(this.groupId)
+        this.loadGroup()
         name.value = ''
         desc.value = ''
       }
-      
     })
-  }
-
-  setEdit(id: string, name: string, desc: string){
-    this.editId = id, this.editName = name, this.editDesc = desc
-  }
-
-  clearEdit(){
-    this.editId = '', this.editName = '', this.editDesc = ''
   }
 
 
   editChannel(name: string, desc: string){
-      this.auth.editChannel(this.groupId, this.editId, name, desc).subscribe(res => {
+    let channel = this.edit$.getValue()
+    channel.name = name, channel.desc = desc
+      this.auth.editChannel(channel).subscribe(res => {
         if(res.success){
-          this.channels$ = this.auth.getChannels(this.groupId)
-          let {success, err, ...channel} = res
-          this.channel = channel as Channel
-          this.clearEdit()
+          this.loadGroup()
+          this.edit$.next({} as Channel)
         }
       })
   }
@@ -120,8 +100,7 @@ export class ChannelsComponent {
     this.auth.deleteChannel(this.groupId, id).subscribe(res => {
       console.log(res)
       if(res.success){
-        this.channels$ = this.auth.getChannels(this.groupId)
-        this.channel = undefined
+        this.loadGroup()
       }
     })
   }

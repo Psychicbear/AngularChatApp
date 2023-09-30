@@ -38,13 +38,12 @@ module.exports = {
     //Uses Find(), finds all users in specified group
     //returns list of users as {users: groupUsers}
     getUsersByGroup: (app, db) => {
-        app.get('/api/user/byGroup/:id', (req, res) => {
+        app.get('/api/user/byGroup/:id', async (req, res) => {
             let validate = new Validator(res)
             try {
                 let id = req.params.id
-                let match = (user) => {return user.roles.global == "super" || user.groups.find(group => group == id)}
-                let groupUsers = db.getUsers(match)
-                
+                let groupUsers = await db.getUsersByGroup(id)
+                console.log(groupUsers)
                 validate.success({users: groupUsers})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)

@@ -39,6 +39,8 @@ export class LoginComponent {
     })
   }
 
+  // Submits login request to server, saves the user data to session if it succeeds
+  // Navigating the user to the dashboard afterwards
   login(username: string, password: string, remember: boolean = false) {
     console.log('Attempting login')
     this.auth.login(username, password).subscribe((data) => {
@@ -52,6 +54,8 @@ export class LoginComponent {
     })
   }
 
+  // Submits signup request to server, saves the user data to session if it succeeds,
+  // Navigating the user to the dashboard afterwards
   signup(email: string, username: string, password: string, confirm: string){
     if(password == confirm){
       this.auth.register(email, username, password).subscribe((data) => {

@@ -4,17 +4,15 @@ module.exports = {
 
     //Takes ID in params, uses find(), returns Group
     getGroup: (app, db) => {
-        app.get('/api/group/:id', (req, res) => {
+        app.get('/api/group/:id', async (req, res) => {
             let validate = new Validator(res)
             try {
                 console.log(req.params.id)
-                let group = db.getGroup(req.params.id)
+                let group = await db.getGroup(req.params.id)
                 validate.success(group)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
                 validate.error(err)
-            } finally {
-                res.send(validate)
             }
         })
     },
@@ -36,12 +34,13 @@ module.exports = {
 
     // Takes ID in params, uses find(), returns Group
     getChannels: (app, db) => {
-        app.get('/api/channels/:id', (req, res) => {
+        app.post('/api/channels/', async (req, res) => {
             let validate = new Validator(res)
             try {
-                console.log(req.params.id)
-                let channels = db.getGroup(req.params.id)
-                validate.success(channels)
+                console.log(req.body)
+                let channels = await db.getChannels(req.body.channels)
+                console.log(channels)
+                validate.success({channels: channels})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
                 validate.error(err)
@@ -49,6 +48,22 @@ module.exports = {
         })
     },
     
+    // Takes ID in params, uses find(), returns Group
+    getChannel: (app, db) => {
+        app.get('/api/channels/:id', async (req, res) => {
+            let validate = new Validator(res)
+            try {
+                console.log(req.body.id)
+                let channel = await db.getChannel(req.body.id)
+                console.log(channel)
+                validate.success(channel)
+            } catch(err) {
+                console.log(`Error occurred: ${err}`)
+                validate.error(err)
+            } 
+        })
+    },
+
     // Takes {name: string, desc: string}, uses insertOne()
     // Returns created Group
     createGroup: (app, db) => {
@@ -67,12 +82,13 @@ module.exports = {
     
     // Takes updated user, uses findOneAndUpdate(), 
     // returns updated group
-    editGroup: (app, db) => {
+    editGroup: async (app, db) => {
         app.post('/api/editGroup', async (req, res) => {
             let validate = new Validator(res)
             try {
                 const {update} = req.body
-                let group = db.updateGroup(update)
+                let group = await db.updateGroup(update)
+                console.log(group)
                 validate.success(group)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
@@ -120,9 +136,7 @@ module.exports = {
         app.post('/api/editChannel', async (req, res) => {
             let validate = new Validator(res)
             try {
-                const {groupId, chanId, name, desc} = req.body
-                let group = db.getGroup(groupId)
-                let channel = group.getChannel(chanId).edit(name, desc)
+                let channel = await db.editChannel(req.body.channel)
                 validate.success(channel)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)

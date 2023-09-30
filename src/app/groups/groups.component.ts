@@ -23,22 +23,14 @@ export class GroupsComponent {
   requestListId: string = ''
   requestListName: string = ''
   requestList: BehaviorSubject<User[]> = new BehaviorSubject([] as User[])
-  isAdmin: boolean = false
-  isSuper: boolean = false
   editGroup$: BehaviorSubject<Group> = new BehaviorSubject({} as Group)
-  editId: string = ''
-  editName: string = ''
-  editDesc: string = ''
 
   //TODO: Could convert edit page to a behaviourSubject which is updated with edit.next()
   constructor(){
     this.populateGroups()
-    this.userId = this.auth._id
-    this.isAdmin = this.userHasAdmin('global')
-    this.isSuper = this.auth.isSuper.getValue()
-    console.log(this.auth.roles)
   }
 
+  // Gets list of groups, seperated between saved groups and all groups
   populateGroups(){
     this.auth.getGroups().subscribe(res => {
       console.log(res)
@@ -49,28 +41,24 @@ export class GroupsComponent {
     })
   }
 
+  // Returns boolean if the user is superuser or has privileges for the specified group
   userHasAccess(id: string){
-    return this.isSuper || this.userGroups$.getValue().find(group => group._id == id)
+    return this.auth.isSuper.getValue() || this.userGroups$.getValue().find(group => group._id == id)
   }
 
-  userHasAdmin(id: string){
-  let admin = false
-  for (const [key, value] of Object.entries(this.auth.roles)) {
-    if(key == id && value == "admin") admin = true
-  }
-    console.log(admin)
-    return admin
-  }
 
   userIsPermitted(id: string){
-    return this.isSuper || this.isAdmin || this.userHasAdmin(id)
+    return this.auth.isSuper.getValue() || this.auth.getRole(id) == 'admin'
   }
 
+  // Checks the group requests to see if user's id is within array
   isRequested(requests: string[]){
     console.log(requests)
     return requests.find(id => id == this.userId)
   }
 
+  // Sets the request list to the specified group, requests the list from the server
+  // Updates the requestList subject on success
   setRequestList(name: string, groupId: string){
     console.log({name, groupId})
     this.requestListName = name
@@ -83,6 +71,7 @@ export class GroupsComponent {
     })
   }
 
+  // Sends request for user to join the specified group, reloading the group list on success
   requestJoin(groupId: string){
     this.auth.requestJoin(this.userId, groupId).subscribe(res => {
       console.log(res)
@@ -92,6 +81,7 @@ export class GroupsComponent {
     })
   }
 
+  // Sends request to server to accept the join request, reloading the request list on completion
   acceptRequest(userId: string , groupId: string){
     this.auth.acceptRequest(userId, groupId).subscribe(res => {
       console.log(res)
@@ -106,6 +96,7 @@ export class GroupsComponent {
     })
   }
 
+  // Sends request to server to deny the join request, reloading the request list on completion
   denyRequest(userId: string , groupId: string){
     this.auth.denyRequest(userId, groupId).subscribe(res => {
       console.log(res)
@@ -120,10 +111,12 @@ export class GroupsComponent {
     })
   }
 
+  // Navigates to the specified group page
   goToGroup(groupId: string){
     this.router.navigate(['groups', groupId])
   }
 
+  // Sends new group values to server, reloads the group list on success
   addGroup(name: any, desc: any){
     this.auth.addGroup(name.value, desc.value).subscribe(res => {
       if(res.success){
@@ -134,11 +127,15 @@ export class GroupsComponent {
     })
   }
 
+  // Sets the editgroup subject to the specified group for modification in the edit form
   setEdit(group: Group){
     this.editGroup$.next(group)
   }
 
-  editGroup(group: Group){
+  // Sends completed edit form to the server, reloads the group list if edit job completes successfully
+  editGroup(name: string, desc: string){
+    let group = this.editGroup$.getValue()
+    group.name = name; group.desc = desc
     this.auth.editGroup(group).subscribe(res => {
       if(res.success){
         this.populateGroups()
@@ -146,6 +143,7 @@ export class GroupsComponent {
     })
   }
 
+  // Sends Id of group to delete to the server, reloads group list if successful
   deleteGroup(id: string){
     this.auth.deleteGroup(id).subscribe(res => {
       if(res.success){
