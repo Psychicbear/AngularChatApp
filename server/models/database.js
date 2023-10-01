@@ -35,7 +35,7 @@ class DatabaseWrapper {
 
     //Gets array of Users which have groupID within User.groups
     async getUsersByGroup(groupId){
-        return await this.users.find({groups: new ObjectId(groupId)}).toArray()
+        return await this.users.find({$or: [{groups: new ObjectId(groupId)}, {['roles.global']: 'super'}]}).toArray()
     }
 
     //Adds groupID to User.groups, and {groupID: 'user'} to User.roles

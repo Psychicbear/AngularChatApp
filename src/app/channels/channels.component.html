@@ -97,17 +97,17 @@
         <div class="col-2 py-2 bg-tertiary" *ngIf="users$ | async as users">
             <h4>Users</h4>
             <div class="">
-                <div ngbDropdown class="d-inline-block col-12 p-2" *ngFor="let user of users['users']; index as i">
-                    <div class="btn btn-primary w-100" [id]="dropdownId(i)" ngbDropdownToggle>
+                <div class="d-inline-block col-12 p-2" *ngFor="let user of users['users']; index as i">
+                    <div class="btn btn-primary w-100 dropdown-toggle" [id]="dropdownId(i)" data-bs-toggle="dropdown" aria-expanded="false">
                         {{user.username}}
                     </div>
-                    <div *ngIf="isGroupAdmin || isSuper; else dropuser" class="col-2" ngbDropdownMenu [attr.aria-labelledby]="dropdownId(i)">
-                        <button ngbDropdownItem>Ban</button>
-                        <button ngbDropdownItem>Promote</button>
+                    <div *ngIf="isGroupAdmin || isSuper; else dropuser" class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
+                        <button class="dropdown-item">Ban</button>
+                        <button class="dropdown-item">Promote</button>
                     </div>
                     <ng-template #dropuser>
-                        <div class="col-2" ngbDropdownMenu [attr.aria-labelledby]="dropdownId(i)">
-                            <button ngbDropdownItem>Report</button>
+                        <div class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
+                            <button class="dropdown-item">Report</button>
                         </div>
                     </ng-template>
                 </div>
