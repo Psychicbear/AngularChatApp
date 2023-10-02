@@ -186,7 +186,12 @@ class DatabaseWrapper {
     }
 
     async getChannel(id){
-        return await this.channels.findOne({_id: new ObjectId(id)})
+        let channel = await this.channels.findOne({_id: new ObjectId(id)})
+        return channel
+    }
+
+    async addMessage(id, msg){
+        return await this.channels.findOneAndUpdate({_id: new ObjectId(id)}, {$push: {messages: msg}})
     }
 
     async editChannel(channel){

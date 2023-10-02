@@ -1,6 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb')
 
-const uri = 'mongodb://localhost:27017'
+const uri = 'mongodb://192.168.1.254:27017'
 
 
 let client = new MongoClient(uri)
@@ -36,6 +36,15 @@ newGroups.forEach(gr => {
     newUsers[1].roles[gr._id] = 'admin'
     newUsers[2].groups.push(gr._id)
     newUsers[2].roles[gr._id] = 'user'
+})
+
+newChannels = newChannels.map(chan => {
+    chan.messages = [
+        {userId: newUsers[1]._id, timestamp: new Date(), content: 'Hello world'},
+        {userId: newUsers[2]._id, timestamp: new Date(), content: 'Hello Bob!!!'},
+    ]
+
+    return chan
 })
 
 

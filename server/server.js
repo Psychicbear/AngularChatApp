@@ -3,11 +3,12 @@ let cors = require('cors')
 let http = require('http').Server(app)
 let sockets = require('./sockets.js')
 const { MongoClient } = require('mongodb')
-let connection = new MongoClient('mongodb://localhost:27017/')
+const { Server } = require('socket.io')
+let connection = new MongoClient('mongodb://192.168.1.254:27017/')
 let db
 const bodyparser = require('body-parser')
 const PORT = 3000;
-const io = require('socket.io')(http, {
+const io = new Server(http, {
     cors: {
         origin: "http://localhost:4200",
         methods: ['GET', 'POST'],
@@ -17,11 +18,9 @@ const io = require('socket.io')(http, {
 let userRoutes = require('./routes/userRoutes')
 let groupRoutes = require('./routes/groupRoutes')
 
-sockets.connect(io, PORT)
-
 app.use(cors())
 app.use(bodyparser.json())
-app.listen(PORT, async () => {
+http.listen(PORT, async () => {
     console.log(`Launched local server at port ${PORT}`)
     await connection.connect()
     db = require('./models/database').newDatabase(connection.db('chat'))
@@ -35,7 +34,8 @@ app.listen(PORT, async () => {
     groupRoutes.getGroup(app, db)// api/group/:id
     groupRoutes.getGroups(app, db)// api/group/all
     groupRoutes.getRequests(app, db)// api/requests/:id
-    groupRoutes.getChannels(app, db)// api/channels/:id
+    groupRoutes.getChannels(app, db)// api/channels
+    groupRoutes.getChannel(app, db)// api/channels/:id
     groupRoutes.createGroup(app, db)// api/addGroup
     groupRoutes.editGroup(app, db)// api/editGroup
     groupRoutes.deleteGroup(app, db)// api/deleteGroup
@@ -45,7 +45,7 @@ app.listen(PORT, async () => {
     groupRoutes.requestJoin(app, db)// api/requestJoin
     groupRoutes.acceptRequest(app, db)// api/acceptRequest
     groupRoutes.denyRequest(app, db)// api/denyRequest
-
+    sockets.connect(io, PORT, db)
 })
 
 

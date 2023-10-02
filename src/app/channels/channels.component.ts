@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Channel, Group } from '../classes/group' 
+import { Channel, Group, Message } from '../classes/group' 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { User } from '../classes/user';
@@ -23,24 +23,36 @@ export class ChannelsComponent {
   isGroupAdmin: boolean = false
   isSuper: boolean = false
   channels$?: Observable<Record<string, Channel[]>>
-  users$?: Observable<Record<string, User[]>>
+  users$: BehaviorSubject<User[]> = new BehaviorSubject([] as User[])
   channel$: BehaviorSubject<Channel> = new BehaviorSubject({} as Channel)
   edit$: BehaviorSubject<Channel> = new BehaviorSubject({} as Channel)
+  messages: Message[] = []
 
   constructor(){
     this.isSuper = this.auth.isSuper.getValue()
     this.params.paramMap.subscribe(url => {
       this.groupId = url.get('groupid')!
       this.loadGroup()
-      this.users$ = this.auth.getUsersInGroup(this.groupId)
+      this.auth.getUsersInGroup(this.groupId).subscribe(res => {
+        if(res.success){
+          this.users$.next(res.users)
+        }
+      })
       this.isGroupAdmin = this.auth.getRole(this.groupId) == 'admin'
       console.log(this.isGroupAdmin ? 'User is Group Admin' : 'Basic User')
-
+      this.auth.socket?.emit('join-group', this.groupId)
     })
 
-    this.channels$?.subscribe(chan => {
-      this.auth.socket //Connect socket to channel
+    this.channel$.subscribe(chan => {
+       this.messages = chan.messages
     })
+
+    this.auth.socket?.on('message', msg => {
+      if(this.auth._id != msg.userId){
+        this.messages.push(msg)
+      }
+    })
+
   }
 
   //Loads group by ID then gets the list of channels
@@ -58,10 +70,29 @@ export class ChannelsComponent {
   loadChannel(id: string){
     this.auth.getChannel(id).subscribe(res => {
       let {success, ...channel} = res
-      this.channel$.next(channel)
+      if(success){
+        let {_id, name} = this.channel$.getValue()
+        console.log(channel)
+        this.auth.socket?.emit('leave-channel', {id: _id, name: name})
+        this.channel$.next(channel)
+        this.auth.socket?.emit('join-channel', {id: channel._id, name: channel.name})
+      }
     })
   }
 
+  getUsername(id: string){
+    return this.users$.getValue().find(user => user._id == id)?.username
+  }
+
+  sendMessage(content: string){
+    let msg = {
+      userId: this.auth._id.getValue(),
+      timestamp: new Date(),
+      content: content
+    }
+    this.auth.socket?.emit('sendMessage', {source: this.channel$.getValue()._id, ...msg})
+    this.messages.push(msg)
+  }
 
 
   log(i: any){

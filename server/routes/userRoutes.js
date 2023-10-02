@@ -9,7 +9,7 @@ module.exports = {
             let validate = new Validator(res)
             try {
                 let user = await db.authUser(creds.email, creds.password)
-                console.log(user)
+                console.log(`Authorised user: ${user.name}`)
                 validate.success(user)
             } catch (err) {
                 console.log(`Error occurred: ${err}`)
@@ -24,8 +24,8 @@ module.exports = {
         app.get('/api/user/:id', (req, res) => {
             let validate = new Validator(res)
             try {
-                console.log(req.params.id)
                 let user = db.getUser(req.params.id)
+                console.log(`Got user: ${user.name}`)
                 validate.success(user)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
@@ -43,7 +43,7 @@ module.exports = {
             try {
                 let id = req.params.id
                 let groupUsers = await db.getUsersByGroup(id)
-                console.log(groupUsers)
+                console.log(`Got users for group: ${id}`)
                 validate.success({users: groupUsers})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
@@ -60,6 +60,7 @@ module.exports = {
             let validate = new Validator(res)
             try {
                 let user = db.addUser(creds.email, creds.username, creds.password)
+                console.log(`Created user: ${user.name}`)
                 validate.success(user)
             } catch (err) {
                 console.log(`Error occurred: ${err}`)
@@ -68,7 +69,7 @@ module.exports = {
         })
     },
 
-    
+    //REQUIRES UPDATE TO MONGODB
     //Uses findOneAndUpdate(), returns the updated user
     editUser: (app, db) => {
         app.post('/api/editUser', async (req, res) => {
@@ -86,6 +87,7 @@ module.exports = {
     },
     
 
+    //REQUIRES UPDATE TO MONGODB
     //Uses findOneAndDelete(), returns deleted User
     deleteUser: (app, db) => {
         app.post('/api/deleteUser', async (req, res) => {

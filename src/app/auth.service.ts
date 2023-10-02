@@ -33,7 +33,7 @@ export class AuthService{
     //Loads found data into auth service and connects to socket
     if(existing){
       this.user.next(JSON.parse(existing) as User)
-      //this.socket = io('http://localhost:3000')
+      this.socket = io('http://localhost:3000')
     }
 
     //Loads necessary behavioursubjects which components will monitor for changes.

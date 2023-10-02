@@ -25,3 +25,21 @@
 .bg-tertiary {
     background-color: var(--bg-secondary);
 }
+
+.msg-history {
+    overflow-y: auto;
+}
+
+.bi-btn {
+    font-size: 1.75rem;
+    color: var(--txt-primary);
+}
+
+.bi-btn-danger {
+    color: var(--txt-danger);
+} 
+
+.bi-btn:hover {
+    cursor: pointer;
+    color: var(--txt-muted);
+}
