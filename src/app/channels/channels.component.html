@@ -68,50 +68,60 @@
                 <div class="btn btn-primary" (click)="loadChannel(channel._id)">{{channel.name}}</div>
             </div>
         </div>
-        <div *ngIf="channel$ | async as channel" class="col d-flex flex-column align-space-between">
-            <div *ngIf="channel.name; else nochannel">
-                <nav class="navbar row">
-                    <div class="container-fluid">
-                        <h2>{{channel.name}}</h2>
-                        <div *ngIf="isGroupAdmin || isSuper" class="btn-group">
-                            <i class="bi bi-btn bi-pencil-square" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="edit$.next(channel)"></i>
-                            <i class="bi bi-btn bi-btn-danger bi-trash3" (click)="deleteChannel(channel._id)"></i>
-                        </div>
-                    </div>
-                </nav>
-                <div class="msg-history">
-                    <div class="card mb-3" *ngFor="let message of messages">
-                        <div class="row g-0">
-                          <div class="col-md-4">
-                            <img src="..." class="" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <span><h5 class="card-title">{{getUsername(message.userId)}}</h5><small class="text-body-secondary">{{message.timestamp | date}}</small></span>
-                              
-                              <p class="card-text">{{message.content}}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                </div>
-                <form class="" (ngSubmit)="sendMessage(msg.value)">
-                    <div class="input-group mb-3">
-                        <input #msg type="text" class="form-control" placeholder="" >
-                        <button class="btn btn-outline-secondary" type="submit">Send</button>
-                      </div>
-                </form>
-            </div>
-            <ng-template #nochannel>
-                <div class="col">
+        <div class="col d-flex flex-row">
+            <div *ngIf="channel$ | async as channel">
+                <div class="d-flex flex-column align-space-between" *ngIf="channel.name; else nochannel">
                     <nav class="navbar row">
                         <div class="container-fluid">
-                            <h2>No Channel Selected</h2>
+                            <h2>{{channel.name}}</h2>
+                            <div *ngIf="isGroupAdmin || isSuper" class="btn-group">
+                                <i class="bi bi-btn bi-pencil-square" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="edit$.next(channel)"></i>
+                                <i class="bi bi-btn bi-btn-danger bi-trash3" (click)="deleteChannel(channel._id)"></i>
+                            </div>
                         </div>
                     </nav>
+                    <div class="msg-history">
+                        <div class="card mb-3" *ngFor="let message of messages">
+                            <div class="row g-0">
+                              <div class="col-md-4">
+                                <img src="..." class="" alt="...">
+                              </div>
+                              <div class="col-md-8">
+                                <div class="card-body">
+                                  <span><h5 class="card-title">{{getUsername(message.userId)}}</h5><small class="text-body-secondary">{{message.timestamp | date}}</small></span>
+                                  
+                                  <p class="card-text">{{message.content}}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                    <form class="" (ngSubmit)="sendMessage(msg)">
+                        <div class="input-group mb-3">
+                            <input #msg type="text" class="form-control" placeholder="" >
+                            <button class="btn btn-outline-secondary" type="submit">Send</button>
+                          </div>
+                    </form>
+                    <form (ngSubmit)="uploadImage(file)">
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Default file input example</label>
+                            <input #file class="form-control" type="file" id="formFile">
+                        </div>
+                        <input type="submit" class="btn btn-primary">                     
+                    </form>
                 </div>
-            </ng-template>
+                <ng-template #nochannel>
+                    <div class="col">
+                        <nav class="navbar row">
+                            <div class="container-fluid">
+                                <h2>No Channel Selected</h2>
+                            </div>
+                        </nav>
+                    </div>
+                </ng-template>
+            </div>
         </div>
+
         <div class="col-2 py-2 bg-tertiary" *ngIf="users$ | async as users">
             <h4>Users</h4>
             <div class="">
@@ -129,7 +139,6 @@
                         </div>
                     </ng-template>
                 </div>
-    
             </div>
         </div>
     </div>

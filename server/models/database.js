@@ -103,15 +103,16 @@ class DatabaseWrapper {
     }
 
     //Gets list of groups for the user dashboard
-    async getUserGroupsList(groups=[]){
-        let ids = groups.map(id => ObjectId(id))
+    async getUserGroupsList(id){
+        let ids = await this.users.findOne({_id: new ObjectId(id)}, {projection: {groups: 1}})
+        console.log(ids)
         let userGroups = await this.groups.find(
-            { _id: {$in: ids} }, 
+            { _id: {$in: ids.groups} }, 
             { projection: {id: 1, name: 1, desc: 1, requests: 1 }
         }).toArray()
 
         let remainingGroups = await this.groups.find(
-            { _id: {$nin: ids} }, 
+            { _id: {$nin: ids.groups} }, 
             { projection: {id: 1, name: 1, desc: 1, requests: 1} }
         ).toArray()
 

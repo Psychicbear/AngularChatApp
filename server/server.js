@@ -1,6 +1,9 @@
-let app = require('express')()
+let express = require('express')
+let app = express()
 let cors = require('cors')
 let http = require('http').Server(app)
+let formidable = require('formidable')
+let path = require('path')
 let sockets = require('./sockets.js')
 const { MongoClient } = require('mongodb')
 const { Server } = require('socket.io')
@@ -20,6 +23,8 @@ let groupRoutes = require('./routes/groupRoutes')
 
 app.use(cors())
 app.use(bodyparser.json())
+app.use(express.static(path.join(__dirname, '../dist/imageupload')))
+app.use('/images', express.static(path.join(__dirname, './userimages')))
 http.listen(PORT, async () => {
     console.log(`Launched local server at port ${PORT}`)
     await connection.connect()
@@ -48,6 +53,21 @@ http.listen(PORT, async () => {
     sockets.connect(io, PORT, db)
 })
 
+app.post('/api/upload', (req, res) => {
+    const form = formidable({});
+    console.log(req)
+  
+    form.parse(req, (err, fields, files) => {
+      if (err) {
+        console.log(err)
+        return;
+      }
+
+      console.log(files)
+      console.log(fields)
+      res.json({ fields, files });
+    });
+  });
 
 
 

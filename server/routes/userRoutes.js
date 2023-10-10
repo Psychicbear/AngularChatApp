@@ -21,10 +21,10 @@ module.exports = {
 
     //Uses FindOne(), returning User
     getUser: (app, db) => {
-        app.get('/api/user/:id', (req, res) => {
+        app.get('/api/user/:id', async (req, res) => {
             let validate = new Validator(res)
             try {
-                let user = db.getUser(req.params.id)
+                let user = await db.getUser(req.params.id)
                 console.log(`Got user: ${user.name}`)
                 validate.success(user)
             } catch(err) {

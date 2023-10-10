@@ -21,9 +21,10 @@ export class AuthService{
   isSuper: BehaviorSubject<boolean> = new BehaviorSubject(false)
   _id: BehaviorSubject<string> = new BehaviorSubject('')
   remember?: boolean
-  socket?: Socket
+  socket: Socket
 
   constructor(private http: HttpClient) {
+    this.socket = io('http://localhost:3000')
     //Loads login data from session or local storage
     let existing = sessionStorage.getItem('user')
     if(!existing){
@@ -32,8 +33,9 @@ export class AuthService{
 
     //Loads found data into auth service and connects to socket
     if(existing){
-      this.user.next(JSON.parse(existing) as User)
-      this.socket = io('http://localhost:3000')
+      let user = JSON.parse(existing) as User
+      this.user.next(user)
+      this.socket.emit('auth', user._id)
     }
 
     //Loads necessary behavioursubjects which components will monitor for changes.
@@ -80,14 +82,12 @@ export class AuthService{
     }
     this.remember = remember
     this.user.next(user)
+    this.socket.emit('auth', user._id)
   }
 
   //Returns observable which sends request on subscribe
   login(email: string, password: string): Observable<any>  {
-    let jsonData = {email: email, password: password}
-    console.log('Creating observable')
-    let req = this.http.post<any>('http://localhost:3000/api/login', jsonData, {headers: {'ContentType': 'Application/json'}})
-    return req
+    return this.http.post<any>('http://localhost:3000/api/login', {email: email, password: password}, {headers: {'ContentType': 'Application/json'}})
   }
 
   
@@ -99,10 +99,11 @@ export class AuthService{
     sessionStorage.clear()
     localStorage.clear()
     this.user.next({_id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
+    this.socket.emit('deauth')
   }
 
   getGroups(){
-    return this.http.get<any>('http://localhost:3000/api/groups')
+    return this.http.get<any>('http://localhost:3000/api/groups/' + this._id.getValue())
   }
 
   getRequests(id: string){
@@ -172,5 +173,9 @@ export class AuthService{
 
   deleteChannel(groupId: string, chanId: string){
     return this.http.post<any>('http://localhost:3000/api/deleteChannel', {groupId: groupId, chanId: chanId}, {headers: {'ContentType': 'Application/json'}})
+  }
+
+  uploadImage(content:any){
+    return this.http.post<any>('http://localhost:3000/api/upload', content, {headers: {'ContentType': 'Application/json'}})
   }
 }

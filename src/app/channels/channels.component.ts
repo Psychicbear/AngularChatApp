@@ -27,6 +27,9 @@ export class ChannelsComponent {
   channel$: BehaviorSubject<Channel> = new BehaviorSubject({} as Channel)
   edit$: BehaviorSubject<Channel> = new BehaviorSubject({} as Channel)
   messages: Message[] = []
+  online$: BehaviorSubject<User[]> = new BehaviorSubject([] as User[])
+  offline$: BehaviorSubject<User[]> = new BehaviorSubject([] as User[])
+
 
   constructor(){
     this.isSuper = this.auth.isSuper.getValue()
@@ -51,6 +54,19 @@ export class ChannelsComponent {
       if(this.auth._id != msg.userId){
         this.messages.push(msg)
       }
+    })
+
+    this.auth.socket?.on('update-user-list', list => {
+      let online: User[] = []; let offline: User[] = []
+
+      this.users$.getValue().forEach(user => {
+        if(list.find(user._id)){
+          online.push(user)
+        } else offline.push(user)
+      })
+      
+      this.online$.next(online)
+      this.offline$.next(offline)
     })
 
   }
@@ -84,14 +100,22 @@ export class ChannelsComponent {
     return this.users$.getValue().find(user => user._id == id)?.username
   }
 
-  sendMessage(content: string){
+  sendMessage(content: any){
     let msg = {
       userId: this.auth._id.getValue(),
       timestamp: new Date(),
-      content: content
+      content: content.value
     }
     this.auth.socket?.emit('sendMessage', {source: this.channel$.getValue()._id, ...msg})
     this.messages.push(msg)
+    content.value = ''
+  }
+
+  uploadImage(content: any){
+    console.log(content)
+    this.auth.uploadImage(content).subscribe(res => {
+      console.log(res)
+    })
   }
 
 

@@ -1,10 +1,10 @@
 <div class="container row justify-content-lg-center gy-5 p-4">
     <div class="col-8 my-8 btn-group">
-        <button #loginbtn class="btn btn-primary" [ngClass]="!register ? 'active' : ''" (click)="register ? register=false : register">Login</button>
-        <button #registerbtn class="btn btn-primary" [ngClass]="register ? 'active' : ''" (click)="!register ? register=true : register">Register</button>
+        <button data-testid="login-option" #loginbtn class="btn btn-primary" [ngClass]="!register ? 'active' : ''" (click)="register ? register=false : register">Login</button>
+        <button data-testid="register-option" #registerbtn class="btn btn-primary" [ngClass]="register ? 'active' : ''" (click)="!register ? register=true : register">Register</button>
     </div>
 
-    <div *ngIf="error" class="alert alert-danger" role="alert">
+    <div data-testid="error-msg" *ngIf="error" class="alert alert-danger" role="alert">
         {{error}}
     </div>
     
@@ -16,18 +16,18 @@
             <div *ngIf="error">Error occurred</div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
-                <input #loginemail class="form-control" name="email" type="email">
+                <input data-testid="l-email" #loginemail class="form-control" name="email" type="email">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input #loginpass class="form-control" name="password" type="password">
+                <input data-testid="l-pass" #loginpass class="form-control" name="password" type="password">
             </div>
             <div class="form-check">
                 <label class="form-check-label" for="remember">Remember me?</label>
-                <input #remember class="form-check-input" name="remember" type="checkbox">
+                <input data-testid="l-remember" #remember class="form-check-input" name="remember" type="checkbox">
             </div>
         
-            <button class="my-4 btn btn-primary btn-lg" type="submit">Login</button>
+            <button data-testid="l-submit" class="my-4 btn btn-primary btn-lg" type="submit">Login</button>
         </form>
     </div>
     <ng-template #elseblock>
@@ -38,21 +38,21 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input #regemail class="form-control" name="email" type="email">
+                    <input data-testid="r-email" #regemail class="form-control" name="email" type="email">
                 </div>
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input #reguser class="form-control" name="username" type="text">
+                    <input data-testid="r-username" #reguser class="form-control" name="username" type="text">
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input #regpass class="form-control" name="email" type="password">
+                    <input data-testid="r-pass" #regpass class="form-control" name="email" type="password">
                 </div>
                 <div class="mb-3">
                     <label for="confirm" class="form-label">Confirm Password</label>
-                    <input #regconfirm class="form-control" name="confirm" type="password">
+                    <input data-testid="r-pass2" #regconfirm class="form-control" name="confirm" type="password">
                 </div>
-                <button class="btn btn-primary btn-lg" type="submit">Sign Up</button>
+                <button data-testid="r-submit" class="btn btn-primary btn-lg" type="submit">Sign Up</button>
             </form>
         </div>
     </ng-template>

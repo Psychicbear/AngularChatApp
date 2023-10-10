@@ -19,10 +19,10 @@ module.exports = {
 
     //Uses find({}) to get all Groups, returns array of Groups
     getGroups: (app, db) => {
-        app.get('/api/groups', async (req, res) => {
+        app.get('/api/groups/:id', async (req, res) => {
             let validate = new Validator(res)
             try {
-                let all = await db.getUserGroupsList()
+                let all = await db.getUserGroupsList(req.params.id)
                 console.log('Got all groups')
                 validate.success(all)
             } catch(err) {
