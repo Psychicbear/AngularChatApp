@@ -25,12 +25,11 @@ export class AccountComponent {
   }
 
   saveUser(user: User, username: string, email: string){
-    let save = {...user, username: username, email: email}
-    this.auth.editUser(save).subscribe( res => {
+    user.username = username, user.email = email
+    this.auth.editUser(user).subscribe( res => {
       console.log(res)
-      const {success, ...user} = res
 
-      if(success){
+      if(res.success){
         this.auth.saveSession(user as User, this.auth.remember)
         this.editMode = false
       } else {
@@ -38,6 +37,22 @@ export class AccountComponent {
       }
       
     })
+  }
+
+  saveProfilePic(file: HTMLInputElement){
+    if(file){
+      this.auth.uploadProfilePic(file.files![0]).subscribe(res => {
+        console.log(res)
+        if(res.success){
+          let user = this.auth.user.getValue()
+          user.img = res.imgUrl
+          this.auth.saveSession(user as User, this.auth.remember)
+          this.editMode = false
+        } else {
+          this.error = res.err
+        }
+      })
+    } else console.log('No file uploaded')
   }
 
   deleteAccount(){
@@ -50,7 +65,4 @@ export class AccountComponent {
     })
   }
 
-  changePassword(password: string, confirm: string){
-
-  }
 }

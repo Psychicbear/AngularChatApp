@@ -13,11 +13,15 @@
                     Username: {{user.username}}
                 </li>
                 <li class="list-group-item">Email: {{user.email}}</li>
+                <li *ngIf="user.img" class="list-group-item">Profile Picture: <br><img class="pfp" src="{{auth.getImg(user.img)}}"></li>
             </ul>
 
         </div>
+
+        <!-- Edit Mode -->
         <ng-template #elseblock>
             <button class="btn btn-primary" (click)="editMode=false">Cancel</button>
+            <h2>User Info</h2>
             <form (ngSubmit)="saveUser(user, username.value, email.value)">
                 <div>
                     <input #username type="text" value="{{user.username}}" name="email">
@@ -27,6 +31,12 @@
                 </div>
                 <button class="btn btn-primary" type="submit">Save</button>
                 <button class="btn btn-danger" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Account</button>
+            </form>
+
+            <h2>Upload Profile Picture</h2>
+            <form (ngSubmit)="saveProfilePic(file)">
+                <input #file type="file">
+                <button type="submit">Save Profile Pic</button>
             </form>
         </ng-template>
     </div>

@@ -1,4 +1,5 @@
-const {Validator} = require('../models/validate')
+const { Validator } = require('../models/validate')
+const { formidable } = require('formidable')
 
 module.exports = {  
 
@@ -129,9 +130,9 @@ module.exports = {
         })
     },
 
-    // REQUIRES UPDATE TO CHANNEL COLLECTION
-    // Takes {groupId: string, chanId: string, name: string, desc: string}
-    // Uses findOneAndUpdate(), returns updated Group
+
+    // Takes {channel: string}
+    // Uses findOneAndUpdate(), returns updated Channel
     editChannel: (app, db) => {
         app.post('/api/editChannel', async (req, res) => {
             let validate = new Validator(res)
@@ -145,8 +146,8 @@ module.exports = {
         })
     },
 
-    // REQUIRES UPDATE TO CHANNEL COLLECTION
-    // Takes {groupId: string, chanId: string}, uses findOneAndUpdate(),
+
+    // Takes {chanId: string}, uses findOneAndDelete(),
     // Returns removed Channel
     deleteChannel: (app, db) => {
         app.post('/api/deleteChannel', async (req, res) => {

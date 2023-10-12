@@ -54,10 +54,11 @@
 </div>
 </div>
 
-
+<!-- Main Viewport -->
 <div class="container p-0 h-100">
     <div class="row">
-        <div class="col-2 bg-tertiary py-2" *ngIf="channels$ | async as channels">
+        <!-- Left Sidebar -->
+        <div class="sidebar col-2 bg-tertiary py-2" *ngIf="channels$ | async as channels">
             <div class="py-2 my-2">
                 <h3>{{groupName}}</h3>
             </div>
@@ -68,10 +69,12 @@
                 <div data-test="load-channel" class="btn btn-primary" (click)="loadChannel(channel._id)">{{channel.name}}</div>
             </div>
         </div>
-        <div class="col d-flex flex-row">
-            <div *ngIf="channel$ | async as channel">
-                <div class="d-flex flex-column align-space-between" *ngIf="channel.name; else nochannel">
-                    <nav class="navbar row">
+
+        <!-- Middle Content -->
+            <div class="col" *ngIf="channel$ | async as channel">
+                <div class="d-flex flex-column channel" *ngIf="channel.name; else nochannel">
+                    <!-- Channel Title -->
+                    <nav class="chan-title navbar">
                         <div class="container-fluid">
                             <h2 data-testid="channel-name">{{channel.name}}</h2>
                             <div data-test="channel-modify" *ngIf="isGroupAdmin || isSuper" class="btn-group">
@@ -80,28 +83,38 @@
                             </div>
                         </div>
                     </nav>
-                    <div class="msg-history">
+
+                    <!-- Chat Window -->
+                    <div #chat class="msg-history">
                         <div data-test="channel-messages" class="card mb-3" *ngFor="let message of messages">
-                            <div class="row g-0">
-                              <div class="col-md-4">
-                                <img src="..." class="" alt="...">
-                              </div>
-                              <div class="col-md-8">
-                                <div class="card-body">
-                                  <span><h5 class="card-title">{{getUsername(message.userId)}}</h5><small class="text-body-secondary">{{message.timestamp | date}}</small></span>
-                                  
-                                  <p data-test="msg-content" class="card-text">{{message.content}}</p>
+                            <div *ngIf="getUsername(message.userId) as user" class="row g-0">
+                                <div class="col-md-8 d-flex align-center">
+                                    <div class="">
+                                        <img *ngIf="user.img; else default" src="{{auth.getImg(user.img)}}" class="msg-pfp" alt="...">
+                                        <ng-template #default><i class="bi bi-person-circle msg-pfp-default"></i></ng-template>
+                                    </div>
+                                    <div class="pt-4">
+                                        <div class="d-flex msg-head">
+                                            <span class="msg-name">{{user.username}}</span>
+                                            <span class="text-body-secondary px-2 msg-time">{{message.timestamp | date}}</span>
+                                        </div>  
+                                        <p data-test="msg-content" class="card-text">{{message.content}}</p>
+                                    </div>
                                 </div>
-                              </div>
                             </div>
-                          </div>
+                        </div>
                     </div>
-                    <form class="" (ngSubmit)="sendMessage(msg)">
+
+
+                    <!-- Message Bar -->
+                    <form class="msg-bar" (ngSubmit)="sendMessage(msg)">
                         <div class="input-group mb-3">
                             <input data-testid="msg-field" #msg type="text" class="form-control" placeholder="" >
                             <button data-testid="send-btn" class="btn btn-outline-secondary" type="submit">Send</button>
-                          </div>
+                        </div>
                     </form>
+
+
                     <!-- <form (ngSubmit)="uploadImage(file)">
                         <div class="mb-3">
                             <label for="formFile" class="form-label">Default file input example</label>
@@ -120,8 +133,8 @@
                     </div>
                 </ng-template>
             </div>
-        </div>
 
+        <!-- User List -->
         <div class="col-2 py-2 bg-tertiary" *ngIf="users$ | async as users">
             <h4>Users</h4>
             <div class="">

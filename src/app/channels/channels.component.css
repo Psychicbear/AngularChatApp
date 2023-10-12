@@ -26,8 +26,48 @@
     background-color: var(--bg-secondary);
 }
 
+
+.chan-title {
+    flex-grow: 0
+}
+
 .msg-history {
+    flex-grow: 1;
+    align-content: end;
     overflow-y: auto;
+}
+
+.msg-pfp {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    margin: 1rem;
+}
+
+.msg-pfp-default {
+    font-size: 4rem;
+    margin: 1rem;
+}
+
+.msg-head {
+    line-height: 24px;
+}
+
+.msg-name {
+    font-size: 1.25rem;
+}
+
+.msg-time {
+    font-size: 0.75rem;
+}
+
+.msg-bar {
+    flex-grow: 0;
+    max-height: 10vh;
+}
+
+.channel {
+    height: 80vh;
 }
 
 .bi-btn {

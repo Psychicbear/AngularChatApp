@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Channel, Group, Message } from '../classes/group' 
@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true
 })
 export class ChannelsComponent {
+  @ViewChild('chat') chatElement?: ElementRef<HTMLDivElement>
   auth: AuthService = inject(AuthService)
   router: Router = inject(Router)
   params: ActivatedRoute = inject(ActivatedRoute)
@@ -92,12 +93,14 @@ export class ChannelsComponent {
         this.auth.socket?.emit('leave-channel', {id: _id, name: name})
         this.channel$.next(channel)
         this.auth.socket?.emit('join-channel', {id: channel._id, name: channel.name})
+        console.log(this.chatElement)
       }
     })
   }
 
   getUsername(id: string){
-    return this.users$.getValue().find(user => user._id == id)?.username
+    let { username, img } = this.users$.getValue().find(user => user._id == id)!
+    return { username: username, img: img }
   }
 
   sendMessage(content: any){
@@ -109,14 +112,15 @@ export class ChannelsComponent {
     this.auth.socket?.emit('sendMessage', {source: this.channel$.getValue()._id, ...msg})
     this.messages.push(msg)
     content.value = ''
+    this.chatElement!.nativeElement.scrollTo(0, this.chatElement!.nativeElement.scrollHeight)
   }
 
-  uploadImage(content: any){
-    console.log(content)
-    this.auth.uploadImage(content).subscribe(res => {
-      console.log(res)
-    })
-  }
+  // uploadImage(content: any){
+  //   console.log(content)
+  //   this.auth.uploadImage(content).subscribe(res => {
+  //     console.log(res)
+  //   })
+  // }
 
 
   log(i: any){

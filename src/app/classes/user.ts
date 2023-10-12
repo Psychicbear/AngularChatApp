@@ -6,6 +6,7 @@ export interface User {
     password?: string,
     roles: Roles,
     groups: string[]
+    img?: string
 }
 
 export interface Roles {

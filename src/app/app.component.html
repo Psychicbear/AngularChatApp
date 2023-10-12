@@ -1,20 +1,29 @@
 <div class="container app-root">
     <nav class="navbar navbar-expand-lg row">
         <div class="container-fluid">
-            <span class="navbar-brand">Chat App</span>
+            <span class="navbar-brand" routerLink="/">Chat App</span>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
           
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="auth.isAuthenticated | async; else elseblock">
+            <div class="nav-item dropdown" *ngIf="auth.isAuthenticated | async" id="navbarSupportedContent">
+                <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li *ngIf="auth.user | async as user" class="nav-item">
+                            <img class="nav-pfp" *ngIf="user.img" src="{{user.img}}">
+                            {{user.username}}
+                        </li>
                         <li class="nav-item"><a class="nav-link" routerLink="/account">Account</a></li>
                         <li class="nav-item"><a class="nav-link" routerLink="/">Groups</a></li>
                         <li class="nav-item"><a class="nav-link" routerLink="/login" (click)="auth.logout()">Logout</a></li>
+                </ul> -->
+                <a *ngIf="auth.user | async as user" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img class="nav-pfp" *ngIf="user.img" src="{{auth.getImg(user.img)}}">
+                    {{user.username}}
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" routerLink="/account">Account</a></li>
+                    <li><a class="dropdown-item" routerLink="/login" (click)="auth.logout()">Logout</a></li>
                 </ul>
-                <ng-template #elseblock class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" routerLink="/login">Login</a></li>
-                </ng-template>
             </div>
         </div>
     </nav>

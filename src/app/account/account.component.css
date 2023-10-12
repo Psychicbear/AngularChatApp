@@ -1,3 +1,8 @@
 .list-group {
     background-color: var(--bg-primary)
 }
+
+.pfp {
+    max-width: 20vmax;
+    max-height: 20vmax;
+}

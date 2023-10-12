@@ -74,11 +74,22 @@ class DatabaseWrapper {
 
     //Update User CRUD function
     async updateUser(user){
-        return await this.users.findOneAndUpdate({_id: new ObjectId(user.id)}, {$set: user})
+        let {_id, ...update} = user
+        return await this.users.findOneAndUpdate({_id: new ObjectId(_id)}, {$set: update})
     }
-    //Delete User CRUD function
+
+    //Sets img attribute to user with userId
+    async updateUserProfilePic(userId, img) {
+        return await this.users.findOneAndUpdate({_id: new ObjectId(userId)}, {$set: {img: img}})
+    }
+    //Delete User CRUD function, has to remove all requests made by user 
     async delUser(id){
-        return await this.users.findOneAndDelete({_id: new ObjectId(id)})
+        let userId = new ObjectId(id)
+        let deleted = await this.users.findOneAndDelete({_id: userId})
+        let requests = await this.groups.updateMany({requests: userId}, {$pull: {requests: userId}})
+
+        console.log(requests)
+        return deleted
     }
 
     //Create Group CRUD function

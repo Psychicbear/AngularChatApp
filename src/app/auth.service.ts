@@ -16,6 +16,8 @@ interface GenericResponse<T> {
   providedIn: 'root'
 })
 export class AuthService{
+  serverUrl: string = 'http://localhost:3000/'
+  imgUrl: string
   user: BehaviorSubject<User> = new BehaviorSubject({_id: '', username: '', email: '', roles: {global: ''}, groups: []} as User)
   isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false)
   isSuper: BehaviorSubject<boolean> = new BehaviorSubject(false)
@@ -24,7 +26,8 @@ export class AuthService{
   socket: Socket
 
   constructor(private http: HttpClient) {
-    this.socket = io('http://localhost:3000')
+    this.imgUrl = this.serverUrl + 'images/'
+    this.socket = io(this.serverUrl)
     //Loads login data from session or local storage
     let existing = sessionStorage.getItem('user')
     if(!existing){
@@ -48,6 +51,9 @@ export class AuthService{
     })
   }
 
+  getImg(img: string){
+    return this.imgUrl + img
+  }
 
   getSelf(){
     return this.user.asObservable()
@@ -70,10 +76,6 @@ export class AuthService{
   }
 
 
-  updateUserDB(user: User){
-    return this.http.post<GenericResponse<User>>('http://localhost:3000/api/updateme', user, {headers: {'ContentType': 'Application/json'}})
-  }
-
   //Saves login to session storage, saving also to local storage if remember me is ticked
   saveSession(user: User, remember: boolean = false){
     sessionStorage.setItem('user', JSON.stringify(user))
@@ -87,12 +89,12 @@ export class AuthService{
 
   //Returns observable which sends request on subscribe
   login(email: string, password: string): Observable<any>  {
-    return this.http.post<any>('http://localhost:3000/api/login', {email: email, password: password}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<any>(this.serverUrl + 'api/login', {email: email, password: password}, {headers: {'ContentType': 'Application/json'}})
   }
 
   
   register(email: string, username:string, password: string){
-    return this.http.post<any>('http://localhost:3000/api/register', {email: email, username: username, password: password}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<any>(this.serverUrl + 'api/register', {email: email, username: username, password: password}, {headers: {'ContentType': 'Application/json'}})
   }
 
   logout(){
@@ -103,79 +105,83 @@ export class AuthService{
   }
 
   getGroups(){
-    return this.http.get<any>('http://localhost:3000/api/groups/' + this._id.getValue())
+    return this.http.get<any>(this.serverUrl + 'api/groups/' + this._id.getValue())
   }
 
   getRequests(id: string){
-    return this.http.get<any>('http://localhost:3000/api/requests/' + id)
+    return this.http.get<any>(this.serverUrl + 'api/requests/' + id)
   }
 
   requestJoin(userId: string, groupId: string){
-    return this.http.post<GenericResponse<any>>('http://localhost:3000/api/requestJoin', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<any>>(this.serverUrl + 'api/requestJoin', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
   }
 
   acceptRequest(userId: string, groupId: string){
-    return this.http.post<GenericResponse<any>>('http://localhost:3000/api/acceptRequest', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<any>>(this.serverUrl + 'api/acceptRequest', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
   }
 
   denyRequest(userId: string, groupId: string){
-    return this.http.post<GenericResponse<any>>('http://localhost:3000/api/denyRequest', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<any>>(this.serverUrl + 'api/denyRequest', {userId: userId, groupId: groupId} , {headers: {'ContentType': 'Application/json'}})
   }
 
   getUser(id: string){
-    return this.http.get<any>('http://localhost:3000/api/user/' + id)
+    return this.http.get<any>(this.serverUrl + 'api/user/' + id)
   }
 
 
   editUser(user: User){
-    return this.http.post<GenericResponse<User>>('http://localhost:3000/api/editUser', user, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<User>>(this.serverUrl + 'api/editUser', user, {headers: {'ContentType': 'Application/json'}})
   }
 
   deleteAccount(){
-    return this.http.post<any>('http://localhost:3000/api/deleteUser', {id: this.user.getValue()._id}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<any>(this.serverUrl + 'api/deleteUser', {id: this.user.getValue()._id}, {headers: {'ContentType': 'Application/json'}})
   }
 
   getChannels(channels: string[]){
-    return this.http.post<any>('http://localhost:3000/api/channels/', {channels: channels}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<any>(this.serverUrl + 'api/channels/', {channels: channels}, {headers: {'ContentType': 'Application/json'}})
   }
   
   getChannel(id: string){
-    return this.http.get<any>('http://localhost:3000/api/channels/' + id)
+    return this.http.get<any>(this.serverUrl + 'api/channels/' + id)
   }
 
   getUsersInGroup(groupId: string){
-    return this.http.get<any>('http://localhost:3000/api/user/byGroup/' + groupId)
+    return this.http.get<any>(this.serverUrl + 'api/user/byGroup/' + groupId)
   }
 
   getGroup(id: string){
-    return this.http.get<any>('http://localhost:3000/api/group/' + id)
+    return this.http.get<any>(this.serverUrl + 'api/group/' + id)
   }
 
   addGroup(name: string, desc: string){
-    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/addGroup', {name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<Group>>(this.serverUrl + 'api/addGroup', {name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
   }
 
   editGroup(group: Group){
-    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/editGroup', {update: group}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<Group>>(this.serverUrl + 'api/editGroup', {update: group}, {headers: {'ContentType': 'Application/json'}})
   }
 
   deleteGroup(id: string){
-    return this.http.post<any>('http://localhost:3000/api/deleteGroup', {id: id}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<any>(this.serverUrl + 'api/deleteGroup', {id: id}, {headers: {'ContentType': 'Application/json'}})
   }
 
   addChannel(groupId: string, name: string, desc: string){
-    return this.http.post<GenericResponse<Group>>('http://localhost:3000/api/addChannel', {id: groupId, name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<Group>>(this.serverUrl + 'api/addChannel', {id: groupId, name: name, desc: desc}, {headers: {'ContentType': 'Application/json'}})
   }
 
   editChannel(channel: Channel){
-    return this.http.post<GenericResponse<Channel>>('http://localhost:3000/api/editChannel', {channel: channel}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<GenericResponse<Channel>>(this.serverUrl + 'api/editChannel', {channel: channel}, {headers: {'ContentType': 'Application/json'}})
   }
 
   deleteChannel(groupId: string, chanId: string){
-    return this.http.post<any>('http://localhost:3000/api/deleteChannel', {groupId: groupId, chanId: chanId}, {headers: {'ContentType': 'Application/json'}})
+    return this.http.post<any>(this.serverUrl + 'api/deleteChannel', {groupId: groupId, chanId: chanId}, {headers: {'ContentType': 'Application/json'}})
   }
 
-  uploadImage(content:any){
-    return this.http.post<any>('http://localhost:3000/api/upload', content, {headers: {'ContentType': 'Application/json'}})
+  uploadProfilePic(file: File){
+    let formData = new FormData()
+    formData.append('userId', this._id.getValue())
+    formData.append('img', file)
+    return this.http.post<any>(this.serverUrl + 'api/user/upload', formData, {headers: {'ContentType': 'Application/json'}})
   }
+
 }
