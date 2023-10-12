@@ -1,60 +1,44 @@
 <div class="container row py-4">
     <div class="d-flex">
-        <h3>Groups</h3>
-        <button data-testid="add-btn" *ngIf="userIsPermitted('global')" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addGroupModal">Add</button>
+        <h2 class="px-2">Groups</h2>
+        <i data-testid="add-btn" *ngIf="userIsPermitted('global')" class="bi bi-btn bi-plus-square" type="button" data-bs-toggle="modal" data-bs-target="#addGroupModal"></i>
     </div>
-    <h1>Your Groups</h1>
+    
+    <h3>Your Groups</h3>
     <div class="d-flex flex-wrap justify-content-center" *ngIf="userGroups$ | async; let groups">
         <div data-testid="user-groups" class="col-3 m-2 card border" *ngFor="let group of groups; index as i">
             <div class="card-body">
-                <h5 class="card-title">{{group.name}}</h5>
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">{{group.name}}</h5>
+                    <div class="d-flex gap-2">
+                        <i data-test="open-req-btn" class="bi bi-person-fill-gear bi-btn" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal"></i>
+                        <i data-test="edit-btn" class="bi bi-pencil-square bi-btn" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal"></i>
+                        <i data-test="del-btn" class="bi bi-btn bi-btn-danger bi-trash3" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)"></i>
+                    </div>
+                </div>
                 <h6 class="card-subtitle mb-2 text-body-secondary">{{group.desc}}</h6>
                 <div class="btn-group">
-                    <button data-test="open-btn" class="btn btn-primary" *ngIf="userHasAccess(group._id); else elseblock" (click)="goToGroup(group._id)">Open Group</button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
-                        Requests
-                    </button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
-                        Edit
-                    </button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)">
-                        Delete
-                    </button>
-
+                    <button data-test="open-btn" class="btn btn-primary" (click)="goToGroup(group._id)">Open Group</button>
                 </div>
-
-                    
-                <ng-template #elseblock>
-                    <div *ngIf="isRequested(group.requests) else notrequested">
-                        Access Requested
-                    </div>
-                    <ng-template #notrequested>
-                        <button class="btn btn-primary" (click)="requestJoin(group._id)">Request Access</button>
-                    </ng-template>
-                    
-                </ng-template>
             </div>
         </div>
     </div>
-    <h1>All Groups</h1>
+
+    <h3>All Groups</h3>
     <div class="d-flex flex-wrap justify-content-center" *ngIf="groups$ | async; let groups">
         <div data-testid="group-list" class="col-3 m-2 card border" *ngFor="let group of groups; index as i">
             <div class="card-body">
-                <h5 class="card-title">{{group.name}}</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">{{group.desc}}</h6>
-                <div class="btn-group">
-                    <button data-test="open-btn" class="btn btn-primary" *ngIf="userHasAccess(group._id); else elseblock" (click)="goToGroup(group._id)">Open Group</button>
-                    <button data-test="open-req-btn" class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
-                        Requests
-                    </button>
-                    <button data-test="edit-btn" class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
-                        Edit
-                    </button>
-                    <button data-test="del-btn" class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)">
-                        Delete
-                    </button>
-
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title">{{group.name}}</h5>
+                    <div class="d-flex gap-2">
+                        <i data-test="open-req-btn" class="bi bi-person-fill-gear bi-btn" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal"></i>
+                        <i data-test="edit-btn" class="bi bi-pencil-square bi-btn" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal"></i>
+                        <i data-test="del-btn" class="bi bi-btn bi-btn-danger bi-trash3" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)"></i>
+                    </div>
                 </div>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{group.desc}}</h6>
+                <button data-test="open-btn" class="btn btn-primary" *ngIf="userHasAccess(group._id); else elseblock" (click)="goToGroup(group._id)">Open Group</button>
+
 
                   
                 <ng-template #elseblock>

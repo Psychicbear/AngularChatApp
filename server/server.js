@@ -28,12 +28,14 @@ app.use('/images', express.static(path.join(__dirname, '/userimages')))
 http.listen(PORT, async () => {
     console.log(`Launched local server at port ${PORT}`)
     await connection.connect()
-    db = require('./models/database').newDatabase(connection.db('chat'))
+    db = require('./controllers/database.js').newDatabase(connection.db('chat'))
 
     userRoutes.authUser(app, db)// api/login
     userRoutes.createUser(app, db)// api/register
     userRoutes.getUser(app, db)// api/user/:id
     userRoutes.uploadProfilePic(app, db, path.join(__dirname, '/userimages'))// api/user/upload
+    userRoutes.updateUserRole(app, db)// api/user/updateRole
+    userRoutes.banUser(app, db)// api/user/ban
     userRoutes.editUser(app, db)// api/editUser
     userRoutes.deleteUser(app, db)// api/deleteUser
     userRoutes.getUsersByGroup(app, db)// api/user/byGroup/:id

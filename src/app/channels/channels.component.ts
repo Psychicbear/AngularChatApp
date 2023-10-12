@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class ChannelsComponent {
   @ViewChild('chat') chatElement?: ElementRef<HTMLDivElement>
+  error: string = ''
   auth: AuthService = inject(AuthService)
   router: Router = inject(Router)
   params: ActivatedRoute = inject(ActivatedRoute)
@@ -37,11 +38,7 @@ export class ChannelsComponent {
     this.params.paramMap.subscribe(url => {
       this.groupId = url.get('groupid')!
       this.loadGroup()
-      this.auth.getUsersInGroup(this.groupId).subscribe(res => {
-        if(res.success){
-          this.users$.next(res.users)
-        }
-      })
+      this.loadUserList()
       this.isGroupAdmin = this.auth.getRole(this.groupId) == 'admin'
       console.log(this.isGroupAdmin ? 'User is Group Admin' : 'Basic User')
       this.auth.socket?.emit('join-group', this.groupId)
@@ -84,6 +81,14 @@ export class ChannelsComponent {
     })
   }
 
+  loadUserList(){
+    this.auth.getUsersInGroup(this.groupId).subscribe(res => {
+      if(res.success){
+        this.users$.next(res.users)
+      }
+    })
+  }
+
   loadChannel(id: string){
     this.auth.getChannel(id).subscribe(res => {
       let {success, ...channel} = res
@@ -115,20 +120,31 @@ export class ChannelsComponent {
     this.chatElement!.nativeElement.scrollTo(0, this.chatElement!.nativeElement.scrollHeight)
   }
 
-  // uploadImage(content: any){
-  //   console.log(content)
-  //   this.auth.uploadImage(content).subscribe(res => {
-  //     console.log(res)
-  //   })
-  // }
+  banUser(id: string){
+    this.auth.banUser(id, this.groupId).subscribe(res => {
+      if(res.success){
+        this.loadUserList()
+      }
+    })
+  }
 
-
-  log(i: any){
-    console.log(i)
+  updateUserRole(id: string, role: string, update: string){
+    this.auth.updateUserRole(id, role, update).subscribe(res => {
+      if(res.success){
+        this.loadUserList()
+      } else if(res.err){
+        this.error = res.err
+      }
+    })
   }
 
   dropdownId(i:number){
     return `dropdown${i}`
+  }
+
+  getUserRole(user: User, role: string = this.groupId){
+    type RoleKey = keyof typeof user.roles
+    return user.roles[role as RoleKey]
   }
 
   addChannel(name: any, desc: any){

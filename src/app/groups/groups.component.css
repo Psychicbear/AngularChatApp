@@ -13,3 +13,17 @@
     --bs-btn-active-color: var(--txt-primary);
     --bs-btn-active-bg: var(--gray-400);
 }
+
+.bi-btn {
+    font-size: 1.75rem;
+    color: var(--txt-primary);
+}
+
+.bi-btn-danger {
+    color: var(--txt-danger);
+} 
+
+.bi-btn:hover {
+    cursor: pointer;
+    color: var(--txt-muted);
+}

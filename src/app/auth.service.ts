@@ -133,6 +133,14 @@ export class AuthService{
     return this.http.post<GenericResponse<User>>(this.serverUrl + 'api/editUser', user, {headers: {'ContentType': 'Application/json'}})
   }
 
+  updateUserRole(userId: string, groupId: string, update: string){
+    return this.http.post<GenericResponse<User>>(this.serverUrl + 'api/user/updateRole', {userId: userId, groupId: groupId, update: update}, {headers: {'ContentType': 'Application/json'}})
+  }
+
+  banUser(userId: string, groupId: string){
+    return this.http.post<GenericResponse<User>>(this.serverUrl + 'api/user/ban', {userId: userId, groupId: groupId}, {headers: {'ContentType': 'Application/json'}})
+  }
+
   deleteAccount(){
     return this.http.post<any>(this.serverUrl + 'api/deleteUser', {id: this.user.getValue()._id}, {headers: {'ContentType': 'Application/json'}})
   }

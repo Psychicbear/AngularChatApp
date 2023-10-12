@@ -14,12 +14,15 @@
 .dropdown-menu {
     --bs-dropdown-link-hover-bg: var(--dark-500);
     background-color: var(--dark-800);
-    width: 100%;
 }
 
 
 .dropdown-toggle {
     border-width: 0;
+}
+
+.dropdown-item {
+    cursor: pointer;
 }
 
 .bg-tertiary {

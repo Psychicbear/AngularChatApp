@@ -1,4 +1,4 @@
-const { Validator } = require('../models/validate.js')
+const { Validator } = require('../controllers/validate.js')
 const { formidable } = require('formidable')
 
 module.exports = {
@@ -110,6 +110,41 @@ module.exports = {
             }
         })
     },
+
+    //Uses findOneAndUpdate(), returns the updated user
+    updateUserRole: (app, db) => {
+        app.post('/api/user/updateRole', async (req, res) => {
+            let validate = new Validator(res)
+            let {groupId, userId, update} = req.body
+            try {
+                let user = await db.updateUserRole(userId, groupId, update)
+                console.log(user)
+                validate.success(user)
+            } catch(err) {
+                console.log(`Error occurred: ${err}`)
+                validate.error(err)
+            }
+        })
+    },
+
+    //Uses findOneAndUpdate(), returns the updated user
+    banUser: (app, db) => {
+        app.post('/api/user/ban', async (req, res) => {
+            let validate = new Validator(res)
+            let {groupId, userId} = req.body
+            try {
+                
+                let user = await db.removeUserFromGroup(userId, groupId)
+                console.log(user)
+                validate.success(user)
+            } catch(err) {
+                console.log(`Error occurred: ${err}`)
+                validate.error(err)
+            }
+        })
+    },
+
+
     
 
     //Uses findOneAndDelete(), returns deleted User

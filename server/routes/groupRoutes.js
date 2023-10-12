@@ -1,4 +1,4 @@
-const { Validator } = require('../models/validate')
+const { Validator } = require('../controllers/validate')
 const { formidable } = require('formidable')
 
 module.exports = {  

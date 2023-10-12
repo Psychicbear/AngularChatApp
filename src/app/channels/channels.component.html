@@ -113,18 +113,10 @@
                             <button data-testid="send-btn" class="btn btn-outline-secondary" type="submit">Send</button>
                         </div>
                     </form>
-
-
-                    <!-- <form (ngSubmit)="uploadImage(file)">
-                        <div class="mb-3">
-                            <label for="formFile" class="form-label">Default file input example</label>
-                            <input #file class="form-control" type="file" id="formFile">
-                        </div>
-                        <input type="submit" class="btn btn-primary">                     
-                    </form> -->
                 </div>
+
                 <ng-template #nochannel>
-                    <div class="col">
+                    <div class="col channel">
                         <nav class="navbar row">
                             <div class="container-fluid">
                                 <h2 data-testid="no-channel">No Channel Selected</h2>
@@ -139,17 +131,22 @@
             <h4>Users</h4>
             <div class="">
                 <div class="d-inline-block col-12 p-2" *ngFor="let user of users; index as i">
-                    <div class="btn btn-primary w-100 dropdown-toggle" [id]="dropdownId(i)" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="btn btn-primary w-100 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {{user.username}}
                     </div>
-                    <div *ngIf="isGroupAdmin || isSuper; else dropuser" class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
-                        <button data-test="mod-tools" class="dropdown-item">Ban</button>
-                        <button data-test="mod-tools" class="dropdown-item">Promote</button>
-                    </div>
+                    <ul *ngIf="isGroupAdmin || isSuper; else dropuser" class="dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
+                        <li data-test="mod-tools" class="dropdown-item" (click)="banUser(user._id)">Ban</li>
+                        <li *ngIf="getUserRole(user) == 'user'; else admin" data-test="mod-tools" class="dropdown-item" (click)="updateUserRole(user._id, groupId, 'admin')">Promote</li>
+                        <ng-template #admin>
+                            <li data-test="mod-tools" class="dropdown-item" (click)="updateUserRole(user._id, groupId, 'user')">Demote</li>
+                        </ng-template>
+                        <li *ngIf="isSuper && getUserRole(user, 'global') == 'admin'" data-test="mod-tools" class="dropdown-item" (click)="updateUserRole(user._id, 'global', 'user')">Demote Global</li>
+                        <li *ngIf="isSuper && getUserRole(user, 'global') == 'user'" data-test="mod-tools" class="dropdown-item" (click)="updateUserRole(user._id, 'global', 'admin')">Promote Global</li>
+                    </ul>
                     <ng-template #dropuser>
-                        <div class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
-                            <button class="dropdown-item">Report</button>
-                        </div>
+                        <ul class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
+                            <li class="dropdown-item">Report</li>
+                        </ul>
                     </ng-template>
                 </div>
             </div>
