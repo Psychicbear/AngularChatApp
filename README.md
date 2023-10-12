@@ -109,6 +109,8 @@ The `./server/controllers` contains various classes which assist in controlling 
 ## Data Storage/Serialisation
 All data models are saved and loaded using mongoDB, with the express server connecting to the instance and forwarding commands from the client to modify data. Each data model is saved in a respective collection with the database, and is modified using the functions within the database wrapper class in `./controllers/database.js`.
 
+## End to End (e2e) Testing
+Using the cypress testing library which is standard for Angular, a number of test files have been written which test both front and back end interaction. Using the command `ng e2e` will launch the graphical interface for cypress, where you can select the browser to test in. This will launch a browser instance with a testing page, where clicking on a .cy.ts file will launch the tests within the file. Currently tests run through to test all CRUD operations on the front end application, and basic user interactions.
 
 # Server Routes
 ## API route
