@@ -134,7 +134,7 @@
                     <div class="btn btn-primary w-100 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {{user.username}}
                     </div>
-                    <ul *ngIf="isGroupAdmin || isSuper; else dropuser" class="dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
+                    <ul *ngIf="isGroupAdmin || isSuper; else dropuser" class="dropdown-menu">
                         <li data-test="mod-tools" class="dropdown-item" (click)="banUser(user._id)">Ban</li>
                         <li *ngIf="getUserRole(user) == 'user'; else admin" data-test="mod-tools" class="dropdown-item" (click)="updateUserRole(user._id, groupId, 'admin')">Promote</li>
                         <ng-template #admin>
@@ -144,7 +144,7 @@
                         <li *ngIf="isSuper && getUserRole(user, 'global') == 'user'" data-test="mod-tools" class="dropdown-item" (click)="updateUserRole(user._id, 'global', 'admin')">Promote Global</li>
                     </ul>
                     <ng-template #dropuser>
-                        <ul class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
+                        <ul class="col-2 dropdown-menu">
                             <li class="dropdown-item">Report</li>
                         </ul>
                     </ng-template>

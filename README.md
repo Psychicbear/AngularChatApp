@@ -9,61 +9,60 @@ Data types and structures vary between client and server, however the core data 
 
 ## User
 ```ts
-id: string,
+_id: string,
 name: string,
 email: string,
 password: string,
 groups: string[],
 roles: {global: string, [key: string]: string}
+img?: string
 ```
 User specifies the data representing the end user of the application.
 
-- `id` provides the object with a universal unique identifier (uuid) as a string.
+- `_id` provides the object with a mongoDB ObjectID as a string.
 - `name` is used for identification on the front end.
 - `email` is the user's email used for registration and login.
 - `password` is used for registration/login authorisation.
 - `groups` contains the ids of the groups which the user is a part of.
 - `roles` an object containing a default `global` key with the value indicating the permission level of the user. It also contains each group that the user is part of as a key, with the value indicating the permission level of the user within said group. 
-
+- `img` is an optional parameter containing the file name of the user's profile picture stored on the server
 ## Group
 ```ts
-id: string,
+_id: string,
 name: string,
 desc: string,
 channels: Channel[]
 ```
 Group represents the groups which users can join and interact with.
 
-- `id` provides a uuid as a string.
+- `_id` provides mongoDB id as a string.
 - `name` is what displays on the front end.
 - `desc` is for including additional info about the group.
 - `channels` is an array of channels which the user can interact with.
 
 ## Channel
 ```ts
-id: string,
+_id: string,
 name: string,
 desc: string,
 messages: Message[]
 ```
 Channel represents the individual chat rooms where users can send messages to one another.
 
-- `id` provides uuid as string.
+- `_id` provides mongoDB id as string.
 - `name` is displayed on front end.
 - `desc` is additional info about the channel.
 - `messages`: is an array of messages sent by the users.
 
 ## Message
 ```ts
-id: string,
 user: string,
 content: string,
 timestamp: Date
 ```
 Message represents the messages sent by the users
 
-- `id` provides uuid as string.
-- `user` is the uuid of the user whom sent the message.
+- `user` is the id of the user whom sent the message.
 - `content` is the message content that the user wrote.
 - `timestamp` is the exact time the user sent the message as unix time.
 
@@ -102,11 +101,13 @@ The server is located within the `./server` directory of the repo. The server is
 ## Routes
 All server routes are located within the `./server/routes` folder and are exported from .js files. Routes related to user management are found within userRoutes.js and routes related to group management are found within groupRoutes.js. This decision was made to improve code maintainability whilst avoiding creating too many files.
 
-## Data Models
-The aim with server side data models was to replicate the general functionality of ODM packages such as Mongoose for the local JSON database. Data models can be found within the `./server/models` folder as JS Classes to enforce typing within vanilla JS.
+## Controllers
+The `./server/controllers` contains various classes which assist in controlling the flow of data between the client, server and mongoDB instance.
+ - **database.js** contains a DatabaseWrapper class used for simplifying database operations, and implements custom functions which run on the `MongoClient` instance.
+ - **validate.js** contains a small class for simplifying and streamlining responses to the client from the server. It ensures that all responses follow a particular structure.
 
 ## Data Storage/Serialisation
-All Data Models include a method to serialise their data, reducing the class instance to an object which can be saved to a JSON file. User data is saved within the 'users.json' file, and group data is saved within the 'groups.json' file. Whenever a piece of data is modified by a route, that route will trigger a save function on the modified data, saving the JSON file with the new data.
+All data models are saved and loaded using mongoDB, with the express server connecting to the instance and forwarding commands from the client to modify data. Each data model is saved in a respective collection with the database, and is modified using the functions within the database wrapper class in `./controllers/database.js`.
 
 
 # Server Routes
@@ -150,10 +151,46 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 ### Edit User
 |||
 |:--|:--|
-|**Description**|Takes new user credentials and creates a new User within the database if their credentials don't already exist within the database. This route is used for user registration.
+|**Description**|Takes an edited user object and uses it to save new data to the user in the database.
 |**Route**|`/api/editUser`|
 |**Method**|`POST`|
-|**Parameters**|`{ email: string, username: string }`|
+|**Parameters**|`{ user: User }`|
+|**Return Value**|`{ ...User, success: boolean, err?: string }`|
+
+### Delete User
+|||
+|:--|:--|
+|**Description**|Uses the passed in id to delete a user from the database
+|**Route**|`/api/deleteUser`|
+|**Method**|`POST`|
+|**Parameters**|`{ id: string }`|
+|**Return Value**|`{ deleted: User , success: boolean, err?: string }`|
+
+### Upload Profile Pic
+|||
+|:--|:--|
+|**Description**|Takes an image file and uploads it to the server, using the userId to save the filename to the img parameter of a user within the database
+|**Route**|`/api/user/upload`|
+|**Method**|`POST`|
+|**Parameters**|`{ userId: string, img: File }`|
+|**Return Value**|`{ imgUrl: string, success: boolean, err?: string }`|
+
+### Update User Role
+|||
+|:--|:--|
+|**Description**|Uses the userId to select a user in the database, groupId to select the role of the user, and changes said role to the value of update
+|**Route**|`/api/user/updateRole`|
+|**Method**|`POST`|
+|**Parameters**|`{ userId: string, groupId: string, update: string}`|
+|**Return Value**|`{ ...User, success: boolean, err?: string }`|
+
+### Ban User
+|||
+|:--|:--|
+|**Description**|Uses the groupId to remove the group and role from the user selected with userId, kicking the user from the group
+|**Route**|`/api/user/ban`|
+|**Method**|`POST`|
+|**Parameters**|`{ userId: string, groupId }`|
 |**Return Value**|`{ ...User, success: boolean, err?: string }`|
 
 ## Group Management
@@ -168,10 +205,10 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 ### Get Groups
 |||
 |:--|:--|
-|**Description**|Simply returns a list of all the groups that exist within the database. This route is used for the group list page.
-|**Route**|`/api/groups`|
+|**Description**|Uses the passed in user id in params to get an array of groups that the user is in, and a list of the remaining groups that the user can request to join
+|**Route**|`/api/groups/:id`|
 |**Method**|`GET`|
-|**Return Value**|`{ groups: Group[], success: boolean, err?: string }`|
+|**Return Value**|`{ user: Group[], remaining: Group[], success: boolean, err?: string }`|
 
 ### Get Requests
 |||
@@ -193,7 +230,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 ### Edit Group
 |||
 |:--|:--|
-|**Description**|Takes new group name and description, applies new attributes to group matching id and returns the modified group if successful.
+|**Description**|Takes an updated Group object, sets it to the group matching it's id within the database
 |**Route**|`/api/editGroup`|
 |**Method**|`POST`|
 |**Parameters**|`{ name: string, desc: string }`|
@@ -226,7 +263,7 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 |**Parameters**|`{ userId: string, groupId: string }`|
 |**Return Value**|`{ user: string, joined: groupId, success: boolean, err?: string }`|
 
-### Accept Request
+### Deny Request
 |||
 |:--|:--|
 |**Description**|Takes user id and group id, removes the user id from the group's request array.
@@ -239,36 +276,45 @@ All API calls are to be sent to the route at `./api/`. All responses from the AP
 ### Get Channels
 |||
 |:--|:--|
-|**Description**|Takes group Id in URL params, gets all channels from the selected group. This route is for displaying the list of channels.
+|**Description**|Takes a list of channel ids found within a group, returns all the channel objects using these ids
+|**Route**|`/api/channels/`|
+|**Method**|`POST`|
+|**Parameters**|`{ channels: string[]}`|
+|**Return Value**|`{ channels: Channel[], success: boolean, err?: string }`|
+
+### Get Channel
+|||
+|:--|:--|
+|**Description**|Takes a channel id in url params, returns the channel matching the id
 |**Route**|`/api/channels/:id`|
 |**Method**|`GET`|
-|**Return Value**|`{ channels: Channel[], success: boolean, err?: string }`|
+|**Return Value**|`{ ...Channel, success: boolean, err?: string }`|
 
 ### Add Channel
 |||
 |:--|:--|
-|**Description**|Creates a new Channel within the Group matching id using the name and desc params. Returns the affected Group if successful
+|**Description**|Creates a new Channel within the Group matching id using the name and desc params. Returns the channel if successful
 |**Route**|`/api/addChannel`|
 |**Method**|`POST`|
 |**Parameters**|`{ id: string, name: string, desc: string }`|
-|**Return Value**|`{ ...Group, success: boolean, err?: string }`|
+|**Return Value**|`{ ...Channel, success: boolean, err?: string }`|
 
 
 ### Edit Channel
 |||
 |:--|:--|
-|**Description**|Applies the name and desc attributes to the channel matching the chanId within the group matching the groupId. Returns the affected Group if successful
+|**Description**|Takes an updated Channel object and sets it to the channelId within the database
 |**Route**|`/api/editChannel`|
 |**Method**|`POST`|
-|**Parameters**|`{ groupId: string, chanId: string, name: string, desc: string }`|
-|**Return Value**|`{ ...Group, success: boolean, err?: string }`|
+|**Parameters**|`{ channel: Channel }`|
+|**Return Value**|`{ ...Channel, success: boolean, err?: string }`|
 
 ### Delete Channel
 |||
 |:--|:--|
 |**Description**|Deletes the channel matching chanId from the group matching groupId, returning the removed Channel on success.
-|**Route**|`/api/denyRequest`|
+|**Route**|`/api/deleteChannel`|
 |**Method**|`POST`|
-|**Parameters**|`{ groupId: string, chanId: string }`|
-|**Return Value**|`{ removed: Channel, success: boolean, err?: string }`|
+|**Parameters**|`{ chanId: string }`|
+|**Return Value**|`{ deleted: Channel, success: boolean, err?: string }`|
 

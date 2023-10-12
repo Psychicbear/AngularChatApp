@@ -81,6 +81,7 @@ export class ChannelsComponent {
     })
   }
 
+  //Loads list of users for user sidebar
   loadUserList(){
     this.auth.getUsersInGroup(this.groupId).subscribe(res => {
       if(res.success){
@@ -89,6 +90,7 @@ export class ChannelsComponent {
     })
   }
 
+  //Loads channel chat menu
   loadChannel(id: string){
     this.auth.getChannel(id).subscribe(res => {
       let {success, ...channel} = res
@@ -103,11 +105,13 @@ export class ChannelsComponent {
     })
   }
 
+  //Gets user details for message presentation
   getUsername(id: string){
     let { username, img } = this.users$.getValue().find(user => user._id == id)!
     return { username: username, img: img }
   }
 
+  //Sends message to socket, appending to message list locally
   sendMessage(content: any){
     let msg = {
       userId: this.auth._id.getValue(),
@@ -120,6 +124,7 @@ export class ChannelsComponent {
     this.chatElement!.nativeElement.scrollTo(0, this.chatElement!.nativeElement.scrollHeight)
   }
 
+  //Kicks user from the group and reloads channel list
   banUser(id: string){
     this.auth.banUser(id, this.groupId).subscribe(res => {
       if(res.success){
@@ -128,6 +133,7 @@ export class ChannelsComponent {
     })
   }
 
+  //Updates the role of the user for specified group
   updateUserRole(id: string, role: string, update: string){
     this.auth.updateUserRole(id, role, update).subscribe(res => {
       if(res.success){
@@ -138,9 +144,6 @@ export class ChannelsComponent {
     })
   }
 
-  dropdownId(i:number){
-    return `dropdown${i}`
-  }
 
   getUserRole(user: User, role: string = this.groupId){
     type RoleKey = keyof typeof user.roles
