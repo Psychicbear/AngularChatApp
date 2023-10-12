@@ -1,16 +1,16 @@
 <div class="container row py-4">
     <div class="d-flex">
         <h3>Groups</h3>
-        <button *ngIf="userIsPermitted('global')" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addGroupModal">Add</button>
+        <button data-testid="add-btn" *ngIf="userIsPermitted('global')" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addGroupModal">Add</button>
     </div>
     <h1>Your Groups</h1>
     <div class="d-flex flex-wrap justify-content-center" *ngIf="userGroups$ | async; let groups">
-        <div class="col-3 m-2 card border" *ngFor="let group of groups; index as i">
+        <div data-testid="user-groups" class="col-3 m-2 card border" *ngFor="let group of groups; index as i">
             <div class="card-body">
                 <h5 class="card-title">{{group.name}}</h5>
                 <h6 class="card-subtitle mb-2 text-body-secondary">{{group.desc}}</h6>
                 <div class="btn-group">
-                    <button class="btn btn-primary" *ngIf="userHasAccess(group._id); else elseblock" (click)="goToGroup(group._id)">Open Group</button>
+                    <button data-test="open-btn" class="btn btn-primary" *ngIf="userHasAccess(group._id); else elseblock" (click)="goToGroup(group._id)">Open Group</button>
                     <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
                         Requests
                     </button>
@@ -38,19 +38,19 @@
     </div>
     <h1>All Groups</h1>
     <div class="d-flex flex-wrap justify-content-center" *ngIf="groups$ | async; let groups">
-        <div class="col-3 m-2 card border" *ngFor="let group of groups; index as i">
+        <div data-testid="group-list" class="col-3 m-2 card border" *ngFor="let group of groups; index as i">
             <div class="card-body">
                 <h5 class="card-title">{{group.name}}</h5>
                 <h6 class="card-subtitle mb-2 text-body-secondary">{{group.desc}}</h6>
                 <div class="btn-group">
-                    <button class="btn btn-primary" *ngIf="userHasAccess(group._id); else elseblock" (click)="goToGroup(group._id)">Open Group</button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
+                    <button data-test="open-btn" class="btn btn-primary" *ngIf="userHasAccess(group._id); else elseblock" (click)="goToGroup(group._id)">Open Group</button>
+                    <button data-test="open-req-btn" class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setRequestList(group.name, group._id)" type="button" data-bs-toggle="modal" data-bs-target="#requestModal">
                         Requests
                     </button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <button data-test="edit-btn" class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="setEdit(group)" type="button" data-bs-toggle="modal" data-bs-target="#editModal">
                         Edit
                     </button>
-                    <button class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)">
+                    <button data-test="del-btn" class="btn btn-primary" *ngIf="userIsPermitted(group._id)" (click)="deleteGroup(group._id)">
                         Delete
                     </button>
 
@@ -58,11 +58,11 @@
 
                   
                 <ng-template #elseblock>
-                    <div *ngIf="isRequested(group.requests) else notrequested">
+                    <div data-test="is-requested" *ngIf="isRequested(group.requests) else notrequested">
                         Access Requested
                     </div>
                     <ng-template #notrequested>
-                        <button class="btn btn-primary" (click)="requestJoin(group._id)">Request Access</button>
+                        <button data-test="req-btn" class="btn btn-primary" (click)="requestJoin(group._id)">Request Access</button>
                     </ng-template>
                     
                 </ng-template>
@@ -83,17 +83,17 @@
             <form>
                 <div class="mb-3">
                     <label class="form-label">Name:</label>
-                    <input class="form-control" #addname type="text">
+                    <input data-testid="add-name" class="form-control" #addname type="text">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Description</label>
-                    <textarea class="form-control" #adddesc></textarea>
+                    <textarea data-testid="add-desc" class="form-control" #adddesc></textarea>
                 </div>
             </form> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addGroup(addname, adddesc)">Add Group</button>
+          <button data-testid="add-submit" type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="addGroup(addname, adddesc)">Add Group</button>
         </div>
       </div>
     </div>
@@ -111,17 +111,17 @@
             <form >
                 <div class="mb-3">
                     <label class="form-label">Name:</label>
-                    <input class="form-control" #name name="name" [(ngModel)]="edit.name" type="text">
+                    <input data-testid="edit-name" class="form-control" #name name="name" [(ngModel)]="edit.name" type="text">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Description</label>
-                    <textarea class="form-control" #desc name="desc" [(ngModel)]="edit.desc"></textarea>
+                    <textarea data-testid="edit-desc" class="form-control" #desc name="desc" [(ngModel)]="edit.desc"></textarea>
                 </div>
             </form> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="editGroup(name.value, desc.value)">Add Group</button>
+            <button data-testid="edit-submit" type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="editGroup(name.value, desc.value)">Add Group</button>
         </div>
       </div>
     </div>

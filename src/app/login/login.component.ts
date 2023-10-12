@@ -64,7 +64,7 @@ export class LoginComponent {
           this.auth.saveSession(data)
           this.router.navigateByUrl('/')
         } else {
-          this.error = data.error
+          this.error = data.err
         }
       })
     } else {

@@ -47,10 +47,14 @@ newChannels = newChannels.map(chan => {
     return chan
 })
 
+newUsers[3].groups.push(newGroups[0]._id)
+newUsers[3].roles[newGroups[0]._id] = 'user'
 
 
 
-async function run(){
+
+
+async function initDb(){
     try {
         await client.connect()
         let db = client.db('chat')
@@ -79,4 +83,8 @@ async function run(){
     }
 }
 
-run()
+initDb()
+
+module.exports = {
+    initDb: async () => initDb()
+}

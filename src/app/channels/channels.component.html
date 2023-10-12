@@ -10,17 +10,17 @@
             <form>
                 <div class="mb-3">
                     <label class="form-label">Name:</label>
-                    <input class="form-control" #addname type="text">
+                    <input data-testid="add-name" class="form-control" #addname type="text">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Description</label>
-                    <textarea class="form-control" #adddesc></textarea>
+                    <textarea data-testid="add-desc" class="form-control" #adddesc></textarea>
                 </div>
             </form> 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="addChannel(addname, adddesc)">Add Channel</button>
+          <button data-testid="add-submit" type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="addChannel(addname, adddesc)">Add Channel</button>
         </div>
       </div>
     </div>
@@ -38,17 +38,17 @@
         <form>
             <div class="mb-3">
                 <label class="form-label">Name:</label>
-                <input class="form-control" name="name" [(ngModel)]="edit.name" #name type="text">
+                <input data-testid="edit-name" class="form-control" name="name" [(ngModel)]="edit.name" #name type="text">
             </div>
             <div class="mb-3">
                 <label class="form-label">Description</label>
-                <textarea class="form-control" name="desc" [(ngModel)]="edit.desc" #desc></textarea>
+                <textarea data-testid="edit-desc" class="form-control" name="desc" [(ngModel)]="edit.desc" #desc></textarea>
             </div>
         </form> 
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="editChannel(name.value, desc.value)">Save Channel</button>
+        <button data-testid="edit-submit" type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="editChannel(name.value, desc.value)">Save Channel</button>
     </div>
     </div>
 </div>
@@ -62,10 +62,10 @@
                 <h3>{{groupName}}</h3>
             </div>
             <div class="d-flex justify-content-between">
-                <h3>Channels <i *ngIf="isGroupAdmin || isSuper" class="bi bi-btn bi-plus-square d-inline"  type="button" data-bs-toggle="modal" data-bs-target="#addChannelModal"></i></h3>
+                <h3>Channels <i data-testid="add-btn" *ngIf="isGroupAdmin || isSuper" class="bi bi-btn bi-plus-square d-inline"  type="button" data-bs-toggle="modal" data-bs-target="#addChannelModal"></i></h3>
             </div>
             <div class="" *ngFor="let channel of channels['channels']">
-                <div class="btn btn-primary" (click)="loadChannel(channel._id)">{{channel.name}}</div>
+                <div data-test="load-channel" class="btn btn-primary" (click)="loadChannel(channel._id)">{{channel.name}}</div>
             </div>
         </div>
         <div class="col d-flex flex-row">
@@ -73,15 +73,15 @@
                 <div class="d-flex flex-column align-space-between" *ngIf="channel.name; else nochannel">
                     <nav class="navbar row">
                         <div class="container-fluid">
-                            <h2>{{channel.name}}</h2>
-                            <div *ngIf="isGroupAdmin || isSuper" class="btn-group">
-                                <i class="bi bi-btn bi-pencil-square" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="edit$.next(channel)"></i>
-                                <i class="bi bi-btn bi-btn-danger bi-trash3" (click)="deleteChannel(channel._id)"></i>
+                            <h2 data-testid="channel-name">{{channel.name}}</h2>
+                            <div data-test="channel-modify" *ngIf="isGroupAdmin || isSuper" class="btn-group">
+                                <i data-testid="edit-btn" class="bi bi-btn bi-pencil-square" type="button" data-bs-toggle="modal" data-bs-target="#editChannelModal" (click)="edit$.next(channel)"></i>
+                                <i data-testid="del-btn" class="bi bi-btn bi-btn-danger bi-trash3" (click)="deleteChannel(channel._id)"></i>
                             </div>
                         </div>
                     </nav>
                     <div class="msg-history">
-                        <div class="card mb-3" *ngFor="let message of messages">
+                        <div data-test="channel-messages" class="card mb-3" *ngFor="let message of messages">
                             <div class="row g-0">
                               <div class="col-md-4">
                                 <img src="..." class="" alt="...">
@@ -90,7 +90,7 @@
                                 <div class="card-body">
                                   <span><h5 class="card-title">{{getUsername(message.userId)}}</h5><small class="text-body-secondary">{{message.timestamp | date}}</small></span>
                                   
-                                  <p class="card-text">{{message.content}}</p>
+                                  <p data-test="msg-content" class="card-text">{{message.content}}</p>
                                 </div>
                               </div>
                             </div>
@@ -98,23 +98,23 @@
                     </div>
                     <form class="" (ngSubmit)="sendMessage(msg)">
                         <div class="input-group mb-3">
-                            <input #msg type="text" class="form-control" placeholder="" >
-                            <button class="btn btn-outline-secondary" type="submit">Send</button>
+                            <input data-testid="msg-field" #msg type="text" class="form-control" placeholder="" >
+                            <button data-testid="send-btn" class="btn btn-outline-secondary" type="submit">Send</button>
                           </div>
                     </form>
-                    <form (ngSubmit)="uploadImage(file)">
+                    <!-- <form (ngSubmit)="uploadImage(file)">
                         <div class="mb-3">
                             <label for="formFile" class="form-label">Default file input example</label>
                             <input #file class="form-control" type="file" id="formFile">
                         </div>
                         <input type="submit" class="btn btn-primary">                     
-                    </form>
+                    </form> -->
                 </div>
                 <ng-template #nochannel>
                     <div class="col">
                         <nav class="navbar row">
                             <div class="container-fluid">
-                                <h2>No Channel Selected</h2>
+                                <h2 data-testid="no-channel">No Channel Selected</h2>
                             </div>
                         </nav>
                     </div>
@@ -130,8 +130,8 @@
                         {{user.username}}
                     </div>
                     <div *ngIf="isGroupAdmin || isSuper; else dropuser" class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">
-                        <button class="dropdown-item">Ban</button>
-                        <button class="dropdown-item">Promote</button>
+                        <button data-test="mod-tools" class="dropdown-item">Ban</button>
+                        <button data-test="mod-tools" class="dropdown-item">Promote</button>
                     </div>
                     <ng-template #dropuser>
                         <div class="col-2 dropdown-menu" [attr.aria-labelledby]="dropdownId(i)">

@@ -28,6 +28,7 @@ export class GroupsComponent {
   //TODO: Could convert edit page to a behaviourSubject which is updated with edit.next()
   constructor(){
     this.populateGroups()
+    this.userId = this.auth._id.getValue()
   }
 
   // Gets list of groups, seperated between saved groups and all groups

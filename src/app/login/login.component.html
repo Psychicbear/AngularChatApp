@@ -4,7 +4,7 @@
         <button data-testid="register-option" #registerbtn class="btn btn-primary" [ngClass]="register ? 'active' : ''" (click)="!register ? register=true : register">Register</button>
     </div>
 
-    <div data-testid="error-msg" *ngIf="error" class="alert alert-danger" role="alert">
+    <div data-testid="error-msg" [ngClass]="error ? 'visible' : 'invisible'" class="alert alert-danger" role="alert">
         {{error}}
     </div>
     
@@ -13,7 +13,6 @@
             <div class="text-center">
                 <h1>Login</h1>
             </div>
-            <div *ngIf="error">Error occurred</div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email:</label>
                 <input data-testid="l-email" #loginemail class="form-control" name="email" type="email">

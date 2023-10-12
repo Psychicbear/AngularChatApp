@@ -56,10 +56,11 @@ module.exports = {
     //Uses insertOne(), returns the newly created user
     createUser: (app, db) => {
         app.post('/api/register', async (req, res) => {
-            let creds = req.body
+            let {email, username, password} = req.body
             let validate = new Validator(res)
             try {
-                let user = db.addUser(creds.email, creds.username, creds.password)
+                let user = await db.createUser(username, email, password)
+                console.log(user)
                 console.log(`Created user: ${user.name}`)
                 validate.success(user)
             } catch (err) {

@@ -16,10 +16,10 @@ import { LoginComponent } from './app/login/login.component';
 import { ChannelsComponent } from './app/channels/channels.component';
 
 const routes: Routes = [
-  {path: '', component: GroupsComponent, canActivate: [authGuardGuard]},
-  {path: 'account', component: AccountComponent, canActivate: [authGuardGuard]},
-  {path: 'login', component: LoginComponent},
-  {path: 'groups/:groupid', component: ChannelsComponent, canActivate: [authGuardGuard]},
+  {path: '', title: 'Dashboard', component: GroupsComponent, canActivate: [authGuardGuard]},
+  {path: 'account', title: 'Account Details', component: AccountComponent, canActivate: [authGuardGuard]},
+  {path: 'login', title: 'Login or Register', component: LoginComponent},
+  {path: 'groups/:groupid', title: 'Group Chat', component: ChannelsComponent, canActivate: [authGuardGuard]},
 ];
 
 bootstrapApplication(AppComponent, {

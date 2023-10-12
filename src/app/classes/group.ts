@@ -10,6 +10,7 @@ export interface Group extends IdentifiableObj {
 }
 
 export interface Channel extends IdentifiableObj{
+    group: string,
     messages: Message[]
 }
 

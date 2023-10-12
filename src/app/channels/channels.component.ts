@@ -156,6 +156,7 @@ export class ChannelsComponent {
       console.log(res)
       if(res.success){
         this.loadGroup()
+        this.channel$.next({} as Channel)
       }
     })
   }

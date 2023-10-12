@@ -11,11 +11,16 @@ class DatabaseWrapper {
 
     //Create User CRUD function
     async createUser(username, email, password){
+        if(await this.users.findOne({email: email})){
+            throw 'User with this email already exists'
+        }
+
         let newUser = {
             email: email, username: username, password: password, 
             groups: [], roles: {global: 'user'}
         }
-        return await this.users.insertOne(newUser)
+        let insert = await this.users.insertOne(newUser)
+        return await this.users.findOne({_id: insert.insertedId})
     }
 
     //Gets user matching email and password
@@ -199,11 +204,11 @@ class DatabaseWrapper {
         return await this.channels.findOneAndUpdate({_id: new ObjectId(channel._id)}, {$set: {name: channel.name, desc: channel.desc}})
     }
 
-    async deleteChannel(chanId){
+    async delChannel(chanId){
         let deletedChan = await this.channels.findOneAndDelete({_id: new ObjectId(chanId)})
         console.log(deletedChan)
 
-        let updateGroup = await this.group.findOneAndUpdate({_id: deletedChan.group}, {$pull: {channels: deletedChan._id}})
+        let updateGroup = await this.groups.findOneAndUpdate({_id: deletedChan.group}, {$pull: {channels: deletedChan._id}})
         console.log(updateGroup)
         return deletedChan
     }

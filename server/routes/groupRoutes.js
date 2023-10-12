@@ -119,9 +119,9 @@ module.exports = {
             let validate = new Validator(res)
             try {
                 const {id, name, desc} = req.body
-                let group = db.getGroup(id)
-                group.addChannel(name, desc)
-                validate.success(group)
+                let channel = db.addChannel(id, name, desc)
+                console.log(`Created channel: ${channel.name}`)
+                validate.success(channel)
             } catch(err) {
                 console.log(`Error occurred: ${err}`)
                 validate.error(err)
@@ -152,8 +152,8 @@ module.exports = {
         app.post('/api/deleteChannel', async (req, res) => {
             let validate = new Validator(res)
             try {
-                const {groupId, chanId} = req.body
-                let removed = db.getGroup(groupId).removeChannel(chanId)
+                const {chanId} = req.body
+                let removed = db.delChannel(chanId)
                 validate.success({deleted: removed})
             } catch(err) {
                 console.log(`Error occurred: ${err}`)

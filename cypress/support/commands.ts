@@ -3,11 +3,6 @@
 // with Intellisense and code completion in your
 // IDE or Text Editor.
 // ***********************************************
-// declare namespace Cypress {
-//   interface Chainable<Subject = any> {
-//     customCommand(param: any): typeof customCommand;
-//   }
-// }
 //
 // function customCommand(param: any): void {
 //   console.warn(param);
@@ -41,3 +36,11 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+Cypress.Commands.add('login', (email: string, password: string) => {
+    cy.visit('/login')
+    cy.get('[data-testid=l-email]').type(email)
+    cy.get('[data-testid=l-pass]').type(password)
+    cy.get('[data-testid=l-submit]').click()
+  
+    cy.get('title').should('contain', 'Dashboard')
+})
